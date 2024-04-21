@@ -1,2 +1,3 @@
 # WordHive
-<img src="https://github.com/harshgitdeep/wordhive/assets/88957566/93f004f1-54f5-4bfe-a7f5-ba88bbf0285b" alt="flaticon" height="200">
+![c2e9cc1da429b1af111d6ad752aaaf74](https://github.com/harshgitdeep/wordhive/assets/88957566/d62c795f-7b56-4728-bb88-e68dcc00c161)
+
