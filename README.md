@@ -2,10 +2,9 @@
 
 WordHive is a full-stack blog application built using the MERN (MongoDB, Express, React, Node.js) stack. The application allows users to create, read, update, and delete blog posts with a fully functional authentication system.
 
-<p align="center">
-  <img src="https://github.com/harshgitdeep/wordhive/assets/88957566/d62c795f-7b56-4728-bb88-e68dcc00c161" alt="c2e9cc1da429b1af111d6ad752aaaf74">
-</p>
+## Screenshot
 
+<img width="768" alt="Screenshot 2024-05-20 091710" src="https://github.com/harshgitdeep/wordhive/assets/88957566/6a9db435-2c38-414b-858b-3d1f65f895c4">
 
 ## Table of Contents
 
@@ -134,13 +133,13 @@ wordhive/
 - `PUT /api/posts/:id`: Update a post by ID
 - `DELETE /api/posts/:id`: Delete a post by ID
 
-## Screenshot
-
-<img width="768" alt="Screenshot 2024-05-20 091710" src="https://github.com/harshgitdeep/wordhive/assets/88957566/6a9db435-2c38-414b-858b-3d1f65f895c4">
-
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+
+<p align="center">
+  <img src="https://github.com/harshgitdeep/wordhive/assets/88957566/d62c795f-7b56-4728-bb88-e68dcc00c161" alt="c2e9cc1da429b1af111d6ad752aaaf74">
+</p>
 
 ## License
 
