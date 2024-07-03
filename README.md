@@ -2,6 +2,8 @@
 
 WordHive is a full-stack blog application built using the MERN (MongoDB, Express, React, Node.js) stack. The application allows users to create, read, update, and delete blog posts with a fully functional authentication system.
 
+### Live : https://wordhive.vercel.app/
+
 ## Screenshot
 
 <img width="768" alt="Screenshot 2024-05-20 091710" src="https://github.com/harshgitdeep/wordhive/assets/88957566/6a9db435-2c38-414b-858b-3d1f65f895c4">
