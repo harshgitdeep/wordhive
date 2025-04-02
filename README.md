@@ -139,9 +139,11 @@ wordhive/
 
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
+<a href="https://wordhive.vercel.app/">
 <p align="center">
   <img src="https://github.com/harshgitdeep/wordhive/assets/88957566/d62c795f-7b56-4728-bb88-e68dcc00c161" alt="c2e9cc1da429b1af111d6ad752aaaf74">
 </p>
+</a>
 
 ## License
 
