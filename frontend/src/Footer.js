@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="container mx-auto">
         <div className="flex justify-center items-center">
-          <p className="text-gray-600 text-sm">&copy; 2024 WordHive. All rights reserved. Made by Harshdeep Singh</p>
+          <p className="text-gray-600 text-sm">&copy; 2026 WordHive. All rights reserved. Made by Harshdeep Singh</p>
           <FooterLinks />
         </div>
       </div>
