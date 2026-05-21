@@ -20,7 +20,6 @@ export default function Header() {
       try {
         const response = await fetch('http://localhost:4000/total-users');
         const data = await response.json();
-        setUserCount(data.count);
       } catch (error) {
         console.error('Error fetching user count:', error);
       }
@@ -35,7 +34,6 @@ export default function Header() {
       method: 'POST',
     }).then(() => {
       setUserInfo(null);
-      setKey(prevKey => prevKey + 1);
     });
   }
 
