@@ -91,28 +91,57 @@ async function sendVerificationMail(email_to) {
 
 app.post("/register", async (req, res) => {
   const { username, password, email } = req.body;
-  try {
-    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
 
-    if (existingUser) {
-      if (existingUser.username === username) {
-        return res.status(400).json({ error: "Username already taken" });
-      }
-      if (existingUser.email === email) {
-        return res.status(400).json({ error: "Email already registered" });
-      }
+  try {
+    const trimmedUsername = username.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+
+    // Check username
+    const existingUsername = await User.findOne({
+      username: trimmedUsername,
+    });
+
+    if (existingUsername) {
+      return res.status(400).json({
+        error: "Username already taken",
+      });
     }
 
-    const userDoc = await User.create({
-      username,
-      password: bcrypt.hashSync(password, salt),
-      email,
+    // Check email
+    const existingEmail = await User.findOne({
+      email: trimmedEmail,
     });
-    await sendVerificationMail(email);
-    res.json(userDoc);
+
+    if (existingEmail) {
+      return res.status(400).json({
+        error: "Email already registered",
+      });
+    }
+
+    // Create user
+    const userDoc = await User.create({
+      username: trimmedUsername,
+      password: bcrypt.hashSync(password, salt),
+      email: trimmedEmail,
+    });
+
+    // Send mail separately
+    try {
+      await sendVerificationMail(trimmedEmail);
+    } catch (mailError) {
+      console.log("Mail Error:", mailError);
+    }
+
+    // SUCCESS RESPONSE
+    res.status(201).json({
+      message: "User registered successfully",
+    });
   } catch (e) {
-    console.log(e);
-    res.status(400).json(e);
+    console.log("Register Error:", e);
+
+    res.status(500).json({
+      error: "Something went wrong",
+    });
   }
 });
 
