@@ -4,8 +4,6 @@ import { UserContext } from "./UserContext";
 
 export default function Header() {
   const { setUserInfo, userInfo } = useContext(UserContext);
-  const [key, setKey] = useState(0); // Add key state
-  const [userCount, setUserCount] = useState(0);
 
   useEffect(() => {
     fetch('http://localhost:4000/profile', {
@@ -37,7 +35,7 @@ export default function Header() {
       method: 'POST',
     }).then(() => {
       setUserInfo(null);
-      setKey(prevKey => prevKey + 1); // Update key to force remount
+      setKey(prevKey => prevKey + 1);
     });
   }
 
@@ -64,43 +62,11 @@ export default function Header() {
             <>
               <Link to="/create">Create new post</Link>
               <a onClick={logout}>Logout ({username})</a>
-              {/* <Link 
-      to=""
-      style={{
-        color: 'orange', // Change to your desired color
-        backgroundColor: 'black',
-        textDecoration: 'none', // No underline
-        // fontSize: '20px', // Adjust the font size
-        fontWeight: 'bold', // Bold text
-        padding: '6px 30px',
-        borderRadius: '5px',
-        cursor: 'default',
-        pointerEvents: 'none'
-      }}
-    >
-      Total Users: {userCount}
-    </Link> */}
-            </>
+              </>
           ) : (
             <>
               <Link to="/login">Login</Link>
               <Link to="/register">Register</Link>
-              {/* <Link 
-      to=""
-      style={{
-        color: 'orange', // Change to your desired color
-        backgroundColor: 'black',
-        textDecoration: 'none', // No underline
-        // fontSize: '20px', // Adjust the font size
-        fontWeight: 'bold', // Bold text
-        padding: '6px 30px',
-        borderRadius: '5px',
-        cursor: 'default',
-        pointerEvents: 'none'
-      }}
-    >
-      Total Users: {userCount}
-    </Link> */}
             </>
           )}
         </nav>

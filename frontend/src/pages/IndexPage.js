@@ -1,11 +1,10 @@
 import Post from "../Post";
 import { useEffect, useState } from "react";
-import loadingGif from './loading.gif';
 import HomeGif from './homeloading.gif';
 
 export default function IndexPage() {
   const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch('http://localhost:4000/post').then(response => {
