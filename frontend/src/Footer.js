@@ -6,7 +6,11 @@ export default function Footer() {
       <div className="container mx-auto">
         <div className="flex flex-col justify-center items-center space-y-2">
           <p className="text-gray-600 text-sm">
-            &copy; 2026 WordHive. All rights reserved. Made by Harshdeep Singh
+            &copy; 2026 WordHive. All rights reserved. Made by{" "}
+            <a href="https://github.com/harshgitdeep" target="_blank">
+              <i>@harshgitdeep</i>
+            </a>
+            .
           </p>
           <FooterLinks />
         </div>
@@ -18,6 +22,9 @@ export default function Footer() {
 function FooterLinks() {
   return (
     <ul>
+      <li>
+        <Link to="/">Home</Link>
+      </li>
       <li>
         <Link to="/about">About</Link>
       </li>
