@@ -13,14 +13,20 @@ function EditPost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/post/${id}`);
+        const response = await fetch(
+          `https://wordhive-backend.vercel.app/post/${id}`,
+        );
         if (response.ok) {
           const post = await response.json();
           setTitle(post.title);
           setSummary(post.summary);
           setContent(post.content);
         } else {
-          console.error("Failed to fetch post:", response.status, response.statusText);
+          console.error(
+            "Failed to fetch post:",
+            response.status,
+            response.statusText,
+          );
           alert("Failed to fetch post. Please try again later.");
         }
       } catch (error) {
@@ -35,19 +41,27 @@ function EditPost() {
   async function updatePost(ev) {
     ev.preventDefault();
     const data = { title, summary, content };
-  
+
     try {
-      const response = await fetch(`http://localhost:4000/post/${id}`, {
-        method: "PUT",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `https://wordhive-backend.vercel.app/post/${id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+          credentials: "include",
+        },
+      );
       if (response.ok) {
         setRedirect(true);
       } else {
         const errorText = await response.text();
-        console.error("Failed to update post:", response.status, response.statusText, errorText);
+        console.error(
+          "Failed to update post:",
+          response.status,
+          response.statusText,
+          errorText,
+        );
         alert("Failed to update post. Please try again later.");
       }
     } catch (error) {
@@ -55,18 +69,26 @@ function EditPost() {
       alert("Failed to update post. Please try again later.");
     }
   }
-  
+
   async function deletePost() {
     try {
-      const response = await fetch(`http://localhost:4000/post/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `https://wordhive-backend.vercel.app/post/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
       if (response.ok) {
         setRedirect(true);
       } else {
         const errorText = await response.text();
-        console.error("Failed to delete post:", response.status, response.statusText, errorText);
+        console.error(
+          "Failed to delete post:",
+          response.status,
+          response.statusText,
+          errorText,
+        );
         alert("Failed to delete post. Please try again later.");
       }
     } catch (error) {
@@ -95,11 +117,18 @@ function EditPost() {
       />
       <input type="file" onChange={(ev) => setFiles(ev.target.files)} />
       <Editor onChange={setContent} value={content} />
-      <button style={{ marginTop: "5px", marginRight: "10px" }}>Update post</button>
+      <button style={{ marginTop: "5px", marginRight: "10px" }}>
+        Update post
+      </button>
       <button
         type="button"
         onClick={deletePost}
-        style={{ marginTop: "5px", color: "white", border: "none", background: "maroon" }}
+        style={{
+          marginTop: "5px",
+          color: "white",
+          border: "none",
+          background: "maroon",
+        }}
       >
         Delete post
       </button>

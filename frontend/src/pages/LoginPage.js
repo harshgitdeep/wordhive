@@ -19,12 +19,15 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:4000/login", {
-        method: "POST",
-        body: JSON.stringify({ username, password }),
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://wordhive-backend.vercel.app/login",
+        {
+          method: "POST",
+          body: JSON.stringify({ username, password }),
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        },
+      );
 
       if (response.ok) {
         response.json().then((userInfo) => {

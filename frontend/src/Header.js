@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect} from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "./UserContext";
 
 export default function Header() {
   const { setUserInfo, userInfo } = useContext(UserContext);
 
   useEffect(() => {
-    fetch('http://localhost:4000/profile', {
-      credentials: 'include',
-    }).then(response => {
-      response.json().then(userInfo => {
+    fetch("https://wordhive-backend.vercel.app/profile", {
+      credentials: "include",
+    }).then((response) => {
+      response.json().then((userInfo) => {
         setUserInfo(userInfo);
       });
     });
@@ -18,10 +18,12 @@ export default function Header() {
   useEffect(() => {
     const fetchUserCount = async () => {
       try {
-        const response = await fetch('http://localhost:4000/total-users');
+        const response = await fetch(
+          "https://wordhive-backend.vercel.app/total-users",
+        );
         const data = await response.json();
       } catch (error) {
-        console.error('Error fetching user count:', error);
+        console.error("Error fetching user count:", error);
       }
     };
 
@@ -29,9 +31,9 @@ export default function Header() {
   }, []);
 
   function logout() {
-    fetch('http://localhost:4000/logout', {
-      credentials: 'include',
-      method: 'POST',
+    fetch("https://wordhive-backend.vercel.app/logout", {
+      credentials: "include",
+      method: "POST",
     }).then(() => {
       setUserInfo(null);
     });
@@ -54,13 +56,15 @@ export default function Header() {
         `}
       </style>
       <header>
-        <Link to="/" className="logo">WordHive</Link>
+        <Link to="/" className="logo">
+          WordHive
+        </Link>
         <nav>
           {username ? (
             <>
               <Link to="/create">Create new post</Link>
               <a onClick={logout}>Logout ({username})</a>
-              </>
+            </>
           ) : (
             <>
               <Link to="/login">Login</Link>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import loadingGif from './loading.gif';
+import loadingGif from "./loading.gif";
 
 export default function RegisterPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [passwordCriteria, setPasswordCriteria] = useState({
     length: false,
@@ -21,7 +21,9 @@ export default function RegisterPage() {
   useEffect(() => {
     const checkUsernameAvailability = async () => {
       if (username) {
-        const response = await fetch(`http://localhost:4000/check-username/${username}`);
+        const response = await fetch(
+          `https://wordhive-backend.vercel.app/check-username/${username}`,
+        );
         const data = await response.json();
         setIsUsernameAvailable(!data.available);
       }
@@ -33,7 +35,9 @@ export default function RegisterPage() {
   useEffect(() => {
     const checkEmailAvailability = async () => {
       if (email) {
-        const response = await fetch(`http://localhost:4000/check-email/${email}`);
+        const response = await fetch(
+          `https://wordhive-backend.vercel.app/check-email/${email}`,
+        );
         const data = await response.json();
         setIsEmailAvailable(!data.available);
       }
@@ -65,52 +69,55 @@ export default function RegisterPage() {
   async function register(ev) {
     ev.preventDefault();
     if (!isValidEmail(email)) {
-      alert('Invalid email address!');
+      alert("Invalid email address!");
       return;
     }
     if (!isStrongPassword(password)) {
-      alert('Enter a strong password!');
+      alert("Enter a strong password!");
       return;
     }
     if (isUsernameAvailable) {
-      alert('Username is not available!');
+      alert("Username is not available!");
       return;
     }
     if (isEmailAvailable) {
-      alert('Email is already registered!');
+      alert("Email is already registered!");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:4000/register', {
-        method: 'POST',
-        body: JSON.stringify({ username, password, email }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await fetch(
+        "https://wordhive-backend.vercel.app/register",
+        {
+          method: "POST",
+          body: JSON.stringify({ username, password, email }),
+          headers: { "Content-Type": "application/json" },
+        },
+      );
 
       if (response.ok) {
-        alert('Registration successful. Mail Sent!');
+        alert("Registration successful. Mail Sent!");
         // Redirect to login page
-        navigate('/login');
+        navigate("/login");
       } else {
         const data = await response.json();
         if (response.status === 400) {
-          if (data.error === 'Username already taken') {
-            alert('Username already taken');
-          } else if (data.error === 'Email already registered') {
-            alert('Email already registered');
+          if (data.error === "Username already taken") {
+            alert("Username already taken");
+          } else if (data.error === "Email already registered") {
+            alert("Email already registered");
           } else {
-            alert('Registration failed');
+            alert("Registration failed");
           }
         } else {
-          alert('Registration failed');
+          alert("Registration failed");
         }
       }
     } catch (error) {
-      console.error('Error during registration:', error);
-      alert('Registration failed. Please try again later.');
+      console.error("Error during registration:", error);
+      alert("Registration failed. Please try again later.");
     } finally {
       setIsLoading(false);
     }

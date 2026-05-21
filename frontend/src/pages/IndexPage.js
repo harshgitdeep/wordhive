@@ -1,32 +1,37 @@
 import Post from "../Post";
 import { useEffect, useState } from "react";
-import HomeGif from './homeloading.gif';
+import HomeGif from "./homeloading.gif";
 
 export default function IndexPage() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:4000/post').then(response => {
-      response.json().then(posts => {
+    fetch("https://wordhive-backend.vercel.app/post").then((response) => {
+      response.json().then((posts) => {
         setPosts(posts);
         setIsLoading(false); // Set loading to false when data is loaded
       });
     });
   }, []);
-  
+
   if (isLoading) {
-    return <div className="loading-icon">
-    <img className="loading-img" src={HomeGif} alt="Loading..." style={{ border: "none" }} />
-  </div>
-  
+    return (
+      <div className="loading-icon">
+        <img
+          className="loading-img"
+          src={HomeGif}
+          alt="Loading..."
+          style={{ border: "none" }}
+        />
+      </div>
+    );
   }
 
   return (
     <>
-      {posts.length > 0 && posts.map(post => (
-        <Post key={post.id} {...post} />
-      ))}
+      {posts.length > 0 &&
+        posts.map((post) => <Post key={post.id} {...post} />)}
     </>
   );
 }
