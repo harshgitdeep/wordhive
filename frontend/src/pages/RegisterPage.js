@@ -14,15 +14,15 @@ export default function RegisterPage() {
     number: false,
     specialCharacter: false,
   });
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
-  const [isEmailAvailable, setIsEmailAvailable] = useState(true);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(null);
+  const [isEmailAvailable, setIsEmailAvailable] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkUsernameAvailability = async () => {
       if (username) {
         const response = await fetch(
-          `https://wordhive-backend.vercel.app/check-username/${username}`,
+          `${process.env.REACT_APP_API_URL}/check-username/${username}`,
         );
         const data = await response.json();
         setIsUsernameAvailable(!data.available);
@@ -36,7 +36,7 @@ export default function RegisterPage() {
     const checkEmailAvailability = async () => {
       if (email) {
         const response = await fetch(
-          `https://wordhive-backend.vercel.app/check-email/${email}`,
+          `${process.env.REACT_APP_API_URL}/check-email/${email}`,
         );
         const data = await response.json();
         setIsEmailAvailable(!data.available);
@@ -89,7 +89,7 @@ export default function RegisterPage() {
 
     try {
       const response = await fetch(
-        "https://wordhive-backend.vercel.app/register",
+        `${process.env.REACT_APP_API_URL}/register`,
         {
           method: "POST",
           body: JSON.stringify({ username, password, email }),
@@ -160,17 +160,32 @@ export default function RegisterPage() {
               />
 
               {/* Username Status */}
-              {isUsernameAvailable && (
+              {username && isUsernameAvailable === true && (
                 <p className="mt-2 text-sm text-red-500">
                   Username is not available
                 </p>
               )}
 
-              {!isUsernameAvailable && username && (
+              {username && isUsernameAvailable === false && (
                 <p className="mt-2 text-sm text-green-600">
                   Username is available
                 </p>
               )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+
+              <input
+                type="password"
+                placeholder="Create a strong password"
+                value={password}
+                onChange={(ev) => setPassword(ev.target.value)}
+                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+              />
             </div>
 
             {/* Password Rules */}
@@ -228,21 +243,6 @@ export default function RegisterPage() {
               </ul>
             </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-
-              <input
-                type="password"
-                placeholder="Create a strong password"
-                value={password}
-                onChange={(ev) => setPassword(ev.target.value)}
-                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
-              />
-            </div>
-
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -258,13 +258,13 @@ export default function RegisterPage() {
               />
 
               {/* Email Status */}
-              {isEmailAvailable && (
+              {email && isEmailAvailable === true && (
                 <p className="mt-2 text-sm text-red-500">
                   Email is already registered
                 </p>
               )}
 
-              {!isEmailAvailable && email && (
+              {email && isEmailAvailable === false && (
                 <p className="mt-2 text-sm text-green-600">
                   Email is available
                 </p>
