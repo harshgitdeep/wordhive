@@ -9,9 +9,15 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #FFF5E0;
-  background-image: url('./bg.jpg');
-  background-size: cover;
+
+    background-color: #f8f8f8;
+
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+
+  background-size: 32px 32px;
+
   background-attachment: fixed;
 }
 

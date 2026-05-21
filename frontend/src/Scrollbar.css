@@ -11,7 +11,7 @@
   
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: rgb(202, 134, 8); /* color of the handle */
+    background: #FEF9C3;
   }
   
   /* Handle on hover */
