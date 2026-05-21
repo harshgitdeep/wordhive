@@ -117,51 +117,182 @@ export default function RegisterPage() {
   }
 
   return (
-    <form className="register" onSubmit={register}>
-      <h1>Register</h1>
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(ev) => setUsername(ev.target.value)}
-      />
-      {isUsernameAvailable && <p style={{ color: 'red' }}>Username is not available</p>}
-      {!isUsernameAvailable && username && <p style={{ color: 'green' }}>Username is available</p>}
-      <ul>
-        <h2>Enter a strong password</h2>
-        <li style={{ color: passwordCriteria.length ? 'green' : 'red' }}>
-          Password must be at least 8 characters long
-        </li>
-        <li style={{ color: passwordCriteria.uppercase ? 'green' : 'red' }}>
-          Password must contain at least one uppercase letter
-        </li>
-        <li style={{ color: passwordCriteria.lowercase ? 'green' : 'red' }}>
-          Password must contain at least one lowercase letter
-        </li>
-        <li style={{ color: passwordCriteria.number ? 'green' : 'red' }}>
-          Password must contain at least one number
-        </li>
-        <li style={{ color: passwordCriteria.specialCharacter ? 'green' : 'red' }}>
-          Password must contain at least one special character
-        </li>
-      </ul>
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(ev) => setPassword(ev.target.value)}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(ev) => setEmail(ev.target.value)}
-      />
-      {isEmailAvailable && <p style={{ color: 'red' }}>Email is already registered</p>}
-      {!isEmailAvailable && email && <p style={{ color: 'green' }}>Email is available</p>}
-      <button>Register</button>
-      <p>Already registered? <Link to="/login">Login here</Link>.</p>
-      {isLoading && <img src={loadingGif} style={{ border: "none" }} alt="Loading..." />}
-    </form>
+    <section className="min-h-screen flex items-center justify-center px-6 py-16">
+      <div className="w-full max-w-md">
+        {/* Heading */}
+        <div className="text-center mb-8">
+          <div className="inline-block px-4 py-1 mb-5 text-sm font-medium tracking-wide text-yellow-700 bg-yellow-100 rounded-full">
+            🐝 Join WordHive
+          </div>
+
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+            Create Your Account
+          </h1>
+
+          <p className="text-gray-600 leading-relaxed">
+            Start sharing your thoughts, stories, and ideas with the WordHive
+            community.
+          </p>
+        </div>
+
+        {/* Card */}
+        <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-8">
+          <form className="space-y-5 register" onSubmit={register}>
+            {/* Username */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Username
+              </label>
+
+              <input
+                type="text"
+                placeholder="Choose a username"
+                value={username}
+                onChange={(ev) => setUsername(ev.target.value)}
+                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+              />
+
+              {/* Username Status */}
+              {isUsernameAvailable && (
+                <p className="mt-2 text-sm text-red-500">
+                  Username is not available
+                </p>
+              )}
+
+              {!isUsernameAvailable && username && (
+                <p className="mt-2 text-sm text-green-600">
+                  Username is available
+                </p>
+              )}
+            </div>
+
+            {/* Password Rules */}
+            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5">
+              <h2 className="text-sm font-semibold text-gray-900 mb-4">
+                🔐 Password Requirements
+              </h2>
+
+              <ul className="space-y-2 text-sm">
+                <li
+                  className={`${
+                    passwordCriteria.length ? "text-green-600" : "text-red-500"
+                  }`}
+                >
+                  • At least 8 characters
+                </li>
+
+                <li
+                  className={`${
+                    passwordCriteria.uppercase
+                      ? "text-green-600"
+                      : "text-red-500"
+                  }`}
+                >
+                  • One uppercase letter
+                </li>
+
+                <li
+                  className={`${
+                    passwordCriteria.lowercase
+                      ? "text-green-600"
+                      : "text-red-500"
+                  }`}
+                >
+                  • One lowercase letter
+                </li>
+
+                <li
+                  className={`${
+                    passwordCriteria.number ? "text-green-600" : "text-red-500"
+                  }`}
+                >
+                  • One number
+                </li>
+
+                <li
+                  className={`${
+                    passwordCriteria.specialCharacter
+                      ? "text-green-600"
+                      : "text-red-500"
+                  }`}
+                >
+                  • One special character
+                </li>
+              </ul>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+
+              <input
+                type="password"
+                placeholder="Create a strong password"
+                value={password}
+                onChange={(ev) => setPassword(ev.target.value)}
+                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
+
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(ev) => setEmail(ev.target.value)}
+                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+              />
+
+              {/* Email Status */}
+              {isEmailAvailable && (
+                <p className="mt-2 text-sm text-red-500">
+                  Email is already registered
+                </p>
+              )}
+
+              {!isEmailAvailable && email && (
+                <p className="mt-2 text-sm text-green-600">
+                  Email is available
+                </p>
+              )}
+            </div>
+
+            {/* Button */}
+            <button className="w-full rounded-2xl bg-gray-900 py-3 font-semibold text-white transition hover:bg-black">
+              Register
+            </button>
+
+            {/* Footer */}
+            <p className="text-center text-sm text-gray-600">
+              Already registered?{" "}
+              <Link
+                to="/login"
+                className="font-semibold text-yellow-700 hover:text-yellow-800"
+              >
+                Login here
+              </Link>
+            </p>
+
+            {/* Loader */}
+            {isLoading && (
+              <div className="flex justify-center pt-4">
+                <img
+                  src={loadingGif}
+                  alt="Loading..."
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+            )}
+          </form>
+        </div>
+      </div>
+    </section>
   );
 }
