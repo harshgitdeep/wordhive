@@ -8,13 +8,14 @@ const multer = require("multer");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
+require("dotenv").config();
 
 const User = require("./models/User");
 const Post = require("./models/Post");
 
 const app = express();
 const salt = bcrypt.genSaltSync(10);
-const secret = "asdfe45we45w345wegw345werjktjwertkj";
+const secret = process.env.JWT_SECRET;
 const uploadMiddleware = multer({ dest: "uploads/" });
 
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
@@ -27,9 +28,9 @@ app.use("/uploads", express.static(__dirname + "/uploads"));
 //-------------------------------------------------------
 
 cloudinary.config({
-  cloud_name: "dsuy0nbr7",
-  api_key: "655729588491148",
-  api_secret: "ZUp19g_3J6eLo7WqA1jPEXNQaf4",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 //-------------------------------------------------------
@@ -37,13 +38,10 @@ cloudinary.config({
 //-------------------------------------------------------
 
 mongoose
-  .connect(
-    "mongodb+srv://WordHive:aa69bb@cluster0.cfvft9t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -63,7 +61,7 @@ async function sendVerificationMail(email_to) {
     secure: true,
     auth: {
       user: "wordhiveblogs@gmail.com",
-      pass: "sxvtawnkhfzpminy",
+      pass: process.env.NODEMAILER_PASS,
     },
   });
 
