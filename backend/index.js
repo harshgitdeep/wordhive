@@ -30,7 +30,7 @@ const uploadMiddleware = multer({ dest: "/tmp" });
 
 const allowedOrigins = [
   "http://localhost:3000",
-  process.env.FRONTEND_URL
+  process.env.FRONTEND_URL && process.env.FRONTEND_URL.replace(/\/$/, "")
 ].filter(Boolean);
 
 app.use(
@@ -40,7 +40,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(null, false); // Reject origin gracefully without raising a server-side 500 error
       }
     },
   })
@@ -64,17 +64,41 @@ cloudinary.config({
 // MongoDB Connection
 //-------------------------------------------------------
 
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err.message);
-  });
+let cachedDbConnection = null;
+
+app.use(async (req, res, next) => {
+  if (mongoose.connection.readyState === 1) {
+    return next();
+  }
+
+  if (!process.env.MONGO_URI) {
+    console.error("Database connection failed: MONGO_URI is not defined.");
+    return res.status(500).json({
+      error: "Configuration Error",
+      details: "MONGO_URI environment variable is missing."
+    });
+  }
+
+  try {
+    if (!cachedDbConnection) {
+      console.log("Connecting to MongoDB...");
+      cachedDbConnection = mongoose.connect(process.env.MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+    }
+    await cachedDbConnection;
+    console.log("Connected to MongoDB successfully");
+    next();
+  } catch (err) {
+    console.error("Database connection failure:", err.message);
+    cachedDbConnection = null; // Reset cache on failure
+    return res.status(500).json({
+      error: "Database connection failed",
+      details: err.message
+    });
+  }
+});
 
 //-------------------------------------------------------
 // Nodemailer Configuration
