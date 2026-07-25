@@ -23,6 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
+
 //-------------------------------------------------------
 // Cloudinary Configuration
 //-------------------------------------------------------
@@ -167,8 +168,13 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
+  if (!token) {
+    return res.status(200).json(null);
+  }
   jwt.verify(token, secret, {}, (err, info) => {
-    if (err) throw err;
+    if (err) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
     res.json(info);
   });
 });

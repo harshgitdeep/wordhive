@@ -128,26 +128,25 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         {/* Heading */}
         <div className="text-center mb-8">
-          <div className="inline-block px-4 py-1 mb-5 text-sm font-medium tracking-wide text-yellow-700 bg-yellow-100 rounded-full">
+          <div className="inline-block px-4 py-1.5 mb-5 text-xs font-semibold tracking-wide text-amber-700 bg-amber-50/60 rounded-full border border-amber-200/50">
             🐝 Join WordHive
           </div>
 
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
-            Create Your Account
+          <h1 className="text-4xl font-bold text-slate-900 mb-3">
+            Join the Hive
           </h1>
 
-          <p className="text-gray-600 leading-relaxed">
-            Start sharing your thoughts, stories, and ideas with the WordHive
-            community.
+          <p className="text-slate-600 leading-relaxed">
+            Share your knowledge with creators around the world.
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-8">
+        <div className="bg-white border border-amber-100 rounded-3xl shadow-sm p-8">
           <form className="space-y-5 register" onSubmit={register}>
             {/* Username */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
                 Username
               </label>
 
@@ -156,7 +155,7 @@ export default function RegisterPage() {
                 placeholder="Choose a username"
                 value={username}
                 onChange={(ev) => setUsername(ev.target.value)}
-                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
               />
 
               {/* Username Status */}
@@ -175,7 +174,7 @@ export default function RegisterPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
                 Password
               </label>
 
@@ -184,13 +183,13 @@ export default function RegisterPage() {
                 placeholder="Create a strong password"
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
-                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
               />
             </div>
 
             {/* Password Rules */}
-            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-5">
-              <h2 className="text-sm font-semibold text-gray-900 mb-4">
+            <div className="rounded-2xl border border-amber-100 bg-amber-50/10 p-5">
+              <h2 className="text-sm font-semibold text-slate-900 mb-4">
                 🔐 Password Requirements
               </h2>
 
@@ -245,7 +244,7 @@ export default function RegisterPage() {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
                 Email Address
               </label>
 
@@ -254,7 +253,7 @@ export default function RegisterPage() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(ev) => setEmail(ev.target.value)}
-                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
               />
 
               {/* Email Status */}
@@ -272,16 +271,16 @@ export default function RegisterPage() {
             </div>
 
             {/* Button */}
-            <button className="w-full rounded-2xl bg-gray-900 py-3 font-semibold text-white transition hover:bg-black">
-              Register
+            <button className="w-full rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 py-3 font-semibold text-white transition hover:from-amber-500 hover:to-amber-600 shadow-md shadow-amber-500/20">
+              Join the Hive
             </button>
 
             {/* Footer */}
-            <p className="text-center text-sm text-gray-600">
+            <p className="text-center text-sm text-slate-600">
               Already registered?{" "}
               <Link
                 to="/login"
-                className="font-semibold text-yellow-700 hover:text-yellow-800"
+                className="font-semibold text-amber-600 hover:text-amber-700"
               >
                 Login here
               </Link>

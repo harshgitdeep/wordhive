@@ -12,7 +12,7 @@ export default function PostPage() {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`https://wordhive-backend.vercel.app/post/${id}`).then((response) => {
+    fetch(`${process.env.REACT_APP_API_URL}/post/${id}`).then((response) => {
       response.json().then((postInfo) => {
         setTimeout(() => {
           setPostInfo(postInfo);
@@ -60,17 +60,14 @@ export default function PostPage() {
           </Link>
         </div>
       )}
-      <div className="image">
-        <img
-          src={`${postInfo.cover}`}
-          alt=""
-          style={{
-            border: "4px solid black",
-            borderRadius: " 0px",
-            padding: "0px",
-          }}
-        />
-      </div>
+      {postInfo.cover && (
+        <div className="image">
+          <img
+            src={`${postInfo.cover}`}
+            alt=""
+          />
+        </div>
+      )}
 
       <div
         className="content"

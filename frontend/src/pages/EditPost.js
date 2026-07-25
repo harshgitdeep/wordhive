@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, Navigate } from "react-router-dom";
+import { UserContext } from "../UserContext";
 import Editor from "../Editor";
 
 function EditPost() {
+  const { userInfo } = useContext(UserContext);
   const { id } = useParams();
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
-  const [files, setFiles] = useState(null);
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const response = await fetch(
-          `https://wordhive-backend.vercel.app/post/${id}`,
+          `${process.env.REACT_APP_API_URL}/post/${id}`,
         );
         if (response.ok) {
           const post = await response.json();
@@ -44,7 +45,7 @@ function EditPost() {
 
     try {
       const response = await fetch(
-        `https://wordhive-backend.vercel.app/post/${id}`,
+        `${process.env.REACT_APP_API_URL}/post/${id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -73,7 +74,7 @@ function EditPost() {
   async function deletePost() {
     try {
       const response = await fetch(
-        `https://wordhive-backend.vercel.app/post/${id}`,
+        `${process.env.REACT_APP_API_URL}/post/${id}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -97,6 +98,10 @@ function EditPost() {
     }
   }
 
+  if (userInfo === null) {
+    return <Navigate to="/login" />;
+  }
+
   if (redirect) {
     return <Navigate to="/" />;
   }
@@ -115,7 +120,6 @@ function EditPost() {
         value={summary}
         onChange={(ev) => setSummary(ev.target.value)}
       />
-      <input type="file" onChange={(ev) => setFiles(ev.target.files)} />
       <Editor onChange={setContent} value={content} />
       <button style={{ marginTop: "5px", marginRight: "10px" }}>
         Update post

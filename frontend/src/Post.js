@@ -7,27 +7,36 @@ export default function Post({_id, title, summary, cover, content, createdAt, au
   const formattedDate = format(new Date(createdAt), "MMMM dd, yyyy");
 
   return (
-    <div className="post">
+    <Link to={`/post/${_id}`} className="post" style={{ textDecoration: 'none', color: 'inherit' }}>
       <div className="image">
-        <Link to={`/post/${_id}`}>
-        <LazyLoadImage
-        src={cover}
-        alt="image"
-        effect="blur"
-        // delayTime={500}
-      />
-        </Link>
+        {cover ? (
+          <LazyLoadImage
+            src={cover}
+            alt={title}
+            effect="blur"
+          />
+        ) : (
+          <div className="image-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="placeholder-icon">
+              <path d="M12 2L2 7v10l10 5 10-5V7L12 2z" />
+              <path d="M12 22V12" />
+              <path d="M12 12L2 7" />
+              <path d="M12 12l10-5" />
+              <circle cx="12" cy="12" r="2" fill="#FBBF24" />
+            </svg>
+          </div>
+        )}
       </div>
       <div className="texts">
-        <Link to={`/post/${_id}`}>
+        <div>
           <h2>{title}</h2>
-        </Link>
+          <p className="summary">{summary}</p>
+        </div>
         <p className="info">
-          <a className="author">@{author.username}</a>
+          <span className="author">@{author.username}</span>
           <time>{formattedDate}</time>
         </p>
-        <p className="summary">{summary}</p>
       </div>
-    </div>
+    </Link>
   );
 }

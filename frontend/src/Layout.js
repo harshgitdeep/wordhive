@@ -4,10 +4,12 @@ import {Outlet} from "react-router-dom";
 
 export default function Layout() {
   return (
-    <main>
+    <div className="app-container">
       <Header />
-      <Outlet />
+      <div className="page-content">
+        <Outlet />
+      </div>
       <Footer />
-    </main>
+    </div>
   );
 }

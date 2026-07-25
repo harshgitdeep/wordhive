@@ -20,7 +20,7 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(
-        "https://wordhive-backend.vercel.app/login",
+        `${process.env.REACT_APP_API_URL}/login`,
         {
           method: "POST",
           body: JSON.stringify({ username, password }),
@@ -53,21 +53,21 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Top Badge */}
         <div className="text-center mb-8">
-          <div className="inline-block px-4 py-1 mb-5 text-sm font-medium tracking-wide text-yellow-700 bg-yellow-100 rounded-full">
-            🔐 Welcome Back
+          <div className="inline-block px-4 py-1.5 mb-5 text-xs font-semibold tracking-wide text-amber-700 bg-amber-50 rounded-full border border-amber-200/50">
+            🐝 Welcome Back
           </div>
 
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
-            Login to WordHive
+          <h1 className="text-4xl font-bold text-slate-900 mb-3">
+            Welcome Back to the Hive
           </h1>
 
-          <p className="text-gray-600 leading-relaxed">
-            Continue your writing journey and connect with the community.
+          <p className="text-slate-600 leading-relaxed">
+            Share your knowledge with creators around the world.
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-8">
+        <div className="bg-white border border-amber-100 rounded-3xl shadow-sm p-8">
           {/* Error */}
           {error && (
             <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -79,7 +79,7 @@ export default function LoginPage() {
           <form onSubmit={login} className="space-y-5">
             {/* Username */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
                 Username
               </label>
 
@@ -88,13 +88,13 @@ export default function LoginPage() {
                 placeholder="Enter your username"
                 value={username}
                 onChange={(ev) => setUsername(ev.target.value)}
-                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
                 Password
               </label>
 
@@ -103,32 +103,32 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
-                className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
               />
             </div>
 
             {/* Button */}
             <button
               disabled={isLoading}
-              className="w-full rounded-2xl bg-gray-900 py-3 font-semibold text-white transition hover:bg-black disabled:opacity-70"
+              className="w-full rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 py-3 font-semibold text-white transition hover:from-amber-500 hover:to-amber-600 shadow-md shadow-amber-500/20 disabled:opacity-70"
             >
               {isLoading ? (
                 "Logging in..."
               ) : (
                 <span className="flex items-center justify-center gap-2">
                   <LogIn size={18} />
-                  Login
+                  Login to Hive
                 </span>
               )}
             </button>
           </form>
 
           {/* Footer */}
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-slate-600">
             Don&apos;t have an account?{" "}
             <Link
               to="/register"
-              className="font-semibold text-yellow-700 hover:text-yellow-800"
+              className="font-semibold text-amber-600 hover:text-amber-700"
             >
               Register here
             </Link>
