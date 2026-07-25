@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 
 export default function Header() {
   const { setUserInfo, userInfo } = useContext(UserContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/profile`, {
@@ -43,22 +44,24 @@ export default function Header() {
   return (
     <header>
       <div className="nav-left" style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
-        <Link to="/" className="logo" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-          <img
-            src="/assets/wordhive_logo.svg"
-            alt="WordHive Logo"
-            style={{ width: '32px', height: '32px', objectFit: 'contain' }}
-          />
-          <span style={{ fontWeight: '800', color: '#1E293B', fontSize: '1.4rem', letterSpacing: '-0.5px', marginLeft: '8px' }}>Word</span>
-          <span style={{ fontWeight: '800', color: '#F59E0B', fontSize: '1.4rem', letterSpacing: '-0.5px' }}>Hive</span>
+        <Link to="/" className="logo" aria-label="WordHive Home" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', height: '57.59px' }}>
+          <span style={{ 
+            fontFamily: '"Kaushan Script", cursive', 
+            fontSize: '32px', 
+            color: '#000000',
+            lineHeight: '57.59px',
+            whiteSpace: 'nowrap'
+          }}>
+            WordHive
+          </span>
         </Link>
-        <div className="nav-links">
+        <div className="nav-links desktop-only">
           <Link to="/">Blogs</Link>
           <Link to="/about">About</Link>
           <Link to="/contact">Contact</Link>
         </div>
       </div>
-      <nav>
+      <nav className="desktop-only">
         {username ? (
           <>
             <Link to="/create">Create Story 🐝</Link>
@@ -71,6 +74,42 @@ export default function Header() {
           </>
         )}
       </nav>
+
+      {/* Hamburger menu button */}
+      <button 
+        className="menu-toggle" 
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        aria-label="Toggle Menu"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '24px', height: '24px' }}>
+          {isMenuOpen ? (
+            <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+          ) : (
+            <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round" />
+          )}
+        </svg>
+      </button>
+
+      {/* Dropdown Menu (Mobile Only) */}
+      {isMenuOpen && (
+        <div className="mobile-menu">
+          <Link to="/" onClick={() => setIsMenuOpen(false)}>Blogs</Link>
+          <Link to="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
+          <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+          <div className="mobile-divider" />
+          {username ? (
+            <>
+              <Link to="/create" onClick={() => setIsMenuOpen(false)}>Create Story 🐝</Link>
+              <button onClick={() => { logout(); setIsMenuOpen(false); }} className="logout-btn">Logout ({username})</button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
+              <Link to="/register" onClick={() => setIsMenuOpen(false)} className="register-btn-mobile">Register</Link>
+            </>
+          )}
+        </div>
+      )}
     </header>
   );
 }

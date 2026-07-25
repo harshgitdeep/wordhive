@@ -5,14 +5,18 @@ export default function Footer() {
     <footer className="footer-container">
       <div className="footer-grid">
         <div className="footer-brand">
-          <div className="logo" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', marginBottom: '12px' }}>
-            <img
-              src="/assets/wordhive_logo.svg"
-              alt="WordHive Logo"
-              style={{ width: '28px', height: '28px', objectFit: 'contain' }}
-            />
-            <span style={{ fontWeight: '800', color: '#1E293B', fontSize: '1.25rem', letterSpacing: '-0.5px', marginLeft: '8px' }}>Word</span>
-            <span style={{ fontWeight: '800', color: '#F59E0B', fontSize: '1.25rem', letterSpacing: '-0.5px' }}>Hive</span>
+          <div className="logo" style={{ marginBottom: '12px' }}>
+            <Link to="/" aria-label="WordHive Home" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', height: '57.59px' }}>
+              <span style={{ 
+                fontFamily: '"Kaushan Script", cursive', 
+                fontSize: '32px', 
+                color: '#000000',
+                lineHeight: '57.59px',
+                whiteSpace: 'nowrap'
+              }}>
+                WordHive
+              </span>
+            </Link>
           </div>
           <p className="footer-desc">
             A modern publishing platform inspired by the intelligence of bees and the power of shared knowledge.

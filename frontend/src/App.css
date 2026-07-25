@@ -637,25 +637,136 @@ div.post-page a.edit-btn:active {
   object-fit: contain;
 }
 
+/* Hamburger & Mobile Menu Styles */
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+  width: auto;
+  box-shadow: none;
+  transition: transform var(--transition-fast);
+}
+
+.menu-toggle:hover {
+  background: transparent;
+  box-shadow: none;
+  transform: scale(1.05);
+}
+
+.menu-toggle:active {
+  transform: scale(0.95);
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 110;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  text-align: left;
+}
+
+.mobile-menu a {
+  font-weight: 700;
+  color: var(--text-primary);
+  padding: 8px 0;
+  font-size: 1rem;
+}
+
+.mobile-menu .logout-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.mobile-divider {
+  height: 1px;
+  background: var(--card-border);
+  width: 100%;
+  margin: 4px 0;
+}
+
+.register-btn-mobile {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
+  color: white !important;
+  text-align: center;
+  border-radius: var(--radius-md);
+  padding: 10px 20px !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+
 /* Responsive Media Queries */
 @media screen and (max-width: 640px) {
   header {
     margin: 10px 4% 0;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-    text-align: center;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    position: relative;
   }
   
-  header nav {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+  .desktop-only {
+    display: none !important;
   }
 
-  header nav a, header nav .logout-btn {
-    font-size: 0.85rem;
-    padding: 6px 12px;
+  .menu-toggle {
+    display: block !important;
+  }
+
+  .post p.summary {
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    font-size: 0.85rem !important;
+    margin-top: 8px !important;
+    color: var(--text-secondary) !important;
+  }
+
+  /* SaaS Hero Mobile Sizing */
+  section h1 {
+    font-size: 2.25rem !important;
+    line-height: 1.15 !important;
+  }
+
+  section p {
+    font-size: 0.95rem !important;
+  }
+
+  /* Search & Filters Mobile Stacking */
+  .search-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .search-input-wrapper {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .filter-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sort-select {
+    width: 100%;
   }
 
   .post {
@@ -665,14 +776,18 @@ div.post-page a.edit-btn:active {
   }
 
   .post div.image {
-    flex: 0 0 100%;
+    flex: none;
+    width: 100%;
     height: auto;
     aspect-ratio: 16/10;
   }
 
   .post div.texts {
+    flex: 1 1 auto;
+    width: 100%;
     height: auto;
-    padding: 16px;
+    padding: 20px;
+    box-sizing: border-box;
   }
 
   .post div.texts h2 {
