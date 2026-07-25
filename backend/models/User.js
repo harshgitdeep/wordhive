@@ -7,6 +7,6 @@ const UserSchema = new Schema({
   email: {type: String, required: true, unique: true},
 });
 
-const UserModel = model('User', UserSchema);
+const UserModel = mongoose.models.User || model('User', UserSchema);
 
 module.exports = UserModel;

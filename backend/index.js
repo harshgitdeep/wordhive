@@ -10,15 +10,41 @@ const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
 
+// Ensure required environment variables are set in production
+if (process.env.NODE_ENV === "production") {
+  if (!process.env.MONGO_URI) {
+    console.error("FATAL ERROR: MONGO_URI is not defined.");
+  }
+  if (!process.env.JWT_SECRET) {
+    console.error("FATAL ERROR: JWT_SECRET is not defined.");
+  }
+}
+
 const User = require("./models/User");
 const Post = require("./models/Post");
 
 const app = express();
 const salt = bcrypt.genSaltSync(10);
-const secret = process.env.JWT_SECRET;
-const uploadMiddleware = multer({ dest: "uploads/" });
+const secret = process.env.JWT_SECRET || "fallback_jwt_secret";
+const uploadMiddleware = multer({ dest: "/tmp" });
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(
+  cors({
+    credentials: true,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(__dirname + "/uploads"));
@@ -327,14 +353,22 @@ app.delete("/post/:id", async (req, res) => {
 
 
 
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: err.message || "Internal server error" });
+});
+
 //-------------------------------------------------------
 // Start Server
 //-------------------------------------------------------
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
 
 module.exports = app;
 
