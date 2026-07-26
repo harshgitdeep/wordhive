@@ -28,6 +28,22 @@ const salt = bcrypt.genSaltSync(10);
 const secret = process.env.JWT_SECRET || "fallback_jwt_secret";
 const uploadMiddleware = multer({ dest: "/tmp" });
 
+const cookieOptions = {
+  sameSite: "none",
+  secure: true,
+  httpOnly: true,
+};
+
+const getToken = (req) => {
+  if (req.cookies && req.cookies.token) {
+    return req.cookies.token;
+  }
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
+    return req.headers.authorization.split(" ")[1];
+  }
+  return null;
+};
+
 const allowedOrigins = [
   "http://localhost:3000",
   process.env.FRONTEND_URL && process.env.FRONTEND_URL.replace(/\/$/, "")
@@ -206,9 +222,10 @@ app.post("/login", async (req, res) => {
   if (passOk) {
     jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
       if (err) throw err;
-      res.cookie("token", token).json({
+      res.cookie("token", token, cookieOptions).json({
         id: userDoc._id,
         username,
+        token,
       });
     });
   } else {
@@ -217,7 +234,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-  const { token } = req.cookies;
+  const token = getToken(req);
   if (!token) {
     return res.status(200).json(null);
   }
@@ -230,7 +247,7 @@ app.get("/profile", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.cookie("token", "").json("ok");
+  res.cookie("token", "", cookieOptions).json("ok");
 });
 
 //-------------------------------------------------------
@@ -274,7 +291,11 @@ app.get("/total-users", async (req, res) => {
 //-------------------------------------------------------
 
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
-  const { token } = req.cookies;
+  const token = getToken(req);
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized: Token missing" });
+  }
+
   try {
     const decoded = jwt.verify(token, secret);
     const { title, summary, content } = req.body;
@@ -282,11 +303,16 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
     let coverUrl;
     if (req.file) {
       const { path } = req.file;
-      const result = await cloudinary.uploader.upload(path, {
-        folder: "wordhive-uploads",
-      });
-      coverUrl = result.secure_url;
-      fs.unlinkSync(path);
+      try {
+        const result = await cloudinary.uploader.upload(path, {
+          folder: "wordhive-uploads",
+        });
+        coverUrl = result.secure_url;
+      } finally {
+        if (fs.existsSync(path)) {
+          fs.unlinkSync(path);
+        }
+      }
     }
 
     const postDoc = await Post.create({
@@ -300,12 +326,15 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
     res.json(postDoc);
   } catch (error) {
     console.error("Error creating post:", error);
-    res.status(500).json({ error: "Internal server error" });
+    if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Unauthorized: Invalid or expired token" });
+    }
+    res.status(500).json({ error: error.message || "Internal server error" });
   }
 });
 
 app.put("/post/:id", uploadMiddleware.single("file"), async (req, res) => {
-  const { token } = req.cookies;
+  const token = getToken(req);
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -373,7 +402,7 @@ app.get("/post/:id", async (req, res) => {
 });
 
 app.delete("/post/:id", async (req, res) => {
-  const { token } = req.cookies;
+  const token = getToken(req);
   if (!token) {
     return res.status(401).json({ error: "Unauthorized" });
   }
