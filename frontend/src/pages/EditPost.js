@@ -3,6 +3,7 @@ import { useParams, Navigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import Editor from "../Editor";
 import { toast } from "react-hot-toast";
+import { Save, Trash2 } from "lucide-react";
 
 function EditPost() {
   const { userInfo } = useContext(UserContext);
@@ -88,6 +89,10 @@ function EditPost() {
   }
 
   async function deletePost() {
+    if (!window.confirm("Are you sure you want to delete this post?")) {
+      return;
+    }
+
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/post/${id}`,
@@ -124,7 +129,8 @@ function EditPost() {
   }
 
   return (
-    <form onSubmit={updatePost}>
+    <form className="create-post edit-post-form" onSubmit={updatePost}>
+      <h1>Edit Post</h1>
       <input
         type="text"
         placeholder="Title"
@@ -138,21 +144,20 @@ function EditPost() {
         onChange={(ev) => setSummary(ev.target.value)}
       />
       <Editor onChange={setContent} value={content} />
-      <button style={{ marginTop: "5px", marginRight: "10px" }}>
-        Update post
-      </button>
-      <button
-        type="button"
-        onClick={deletePost}
-        style={{
-          marginTop: "5px",
-          color: "white",
-          border: "none",
-          background: "maroon",
-        }}
-      >
-        Delete post
-      </button>
+      <div className="form-action-buttons">
+        <button type="submit" className="update-btn">
+          <Save className="w-5 h-5" />
+          <span>Update Post</span>
+        </button>
+        <button
+          type="button"
+          onClick={deletePost}
+          className="delete-btn"
+        >
+          <Trash2 className="w-5 h-5" />
+          <span>Delete Post</span>
+        </button>
+      </div>
     </form>
   );
 }

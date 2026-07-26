@@ -3,11 +3,13 @@ import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { UserContext } from "../UserContext";
 import { Link } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, Share2, Check } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function PostPage() {
   const [postInfo, setPostInfo] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
   const { userInfo } = useContext(UserContext);
   const { id } = useParams();
 
@@ -16,11 +18,38 @@ export default function PostPage() {
       response.json().then((postInfo) => {
         setTimeout(() => {
           setPostInfo(postInfo);
-          setIsLoading(false); // Set loading to false when data is loaded
-        }, 2000); // Set timeout for 3 seconds
+          setIsLoading(false);
+        }, 2000);
       });
     });
   }, [id]);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: postInfo.title,
+      text: postInfo.summary || `Check out this blog post: ${postInfo.title}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          toast.error("Failed to share");
+        }
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        toast.success("Link copied to clipboard!");
+        setTimeout(() => setCopied(false), 2500);
+      } catch (err) {
+        toast.error("Failed to copy link");
+      }
+    }
+  };
 
   if (isLoading) {
     return (
@@ -39,8 +68,12 @@ export default function PostPage() {
       <h1>{postInfo.title}</h1>
       <time>{formattedDate}</time>
       <div className="author">@{postInfo.author.username}</div>
-      {userInfo && userInfo.id === postInfo.author._id && (
-        <div className="edit-row">
+      <div className="action-row">
+        <button className="share-btn" onClick={handleShare}>
+          {copied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
+          <span>{copied ? "Link Copied!" : "Share Post"}</span>
+        </button>
+        {userInfo && userInfo.id === postInfo.author._id && (
           <Link className="edit-btn" to={`/edit/${postInfo._id}`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -58,8 +91,8 @@ export default function PostPage() {
             </svg>
             Edit this post
           </Link>
-        </div>
-      )}
+        )}
+      </div>
       {postInfo.cover && (
         <div className="image">
           <img

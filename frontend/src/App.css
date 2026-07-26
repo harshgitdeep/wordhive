@@ -303,7 +303,22 @@ input, textarea {
   font-family: inherit;
   font-size: 0.95rem;
   color: var(--text-primary);
-  transition: all var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* ReactQuill Editor Resizable Styling */
+.ql-container.ql-snow {
+  resize: vertical;
+  overflow: auto;
+  min-height: 220px;
+  max-height: 800px;
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
 }
 
 input:focus, textarea:focus {
@@ -351,6 +366,59 @@ button.secondary-btn {
 button.secondary-btn:hover {
   background: var(--bg-secondary);
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.05);
+}
+
+/* Edit / Create Form Action Buttons */
+.form-action-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.form-action-buttons button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 22px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: var(--radius-md);
+  letter-spacing: 0.2px;
+}
+
+/* Update Post: Vibrant Modern Emerald Gradient */
+.form-action-buttons button.update-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: 1px solid #059669;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+}
+
+.form-action-buttons button.update-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+}
+
+/* Delete Post: Bold Rose / Red Gradient */
+.form-action-buttons button.delete-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  border: 1px solid #dc2626;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
+}
+
+.form-action-buttons button.delete-btn:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+}
+
+.form-action-buttons button.delete-btn:active,
+.form-action-buttons button.update-btn:active {
+  transform: scale(0.98);
 }
 
 /* Search & Filter Row */
@@ -501,10 +569,41 @@ div.post-page div.content p {
   margin: 0 0 20px 0;
 }
 
-/* Edit & Manage Row */
-div.edit-row {
-  text-align: center;
+/* Edit & Action Row */
+div.action-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+div.post-page button.share-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+div.post-page button.share-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+div.post-page button.share-btn:active {
+  transform: scale(0.98);
 }
 
 div.post-page a.edit-btn {
@@ -731,6 +830,7 @@ div.post-page a.edit-btn:active {
   .post p.summary {
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
     font-size: 0.85rem !important;
