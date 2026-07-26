@@ -9,7 +9,7 @@ export default function IndexPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [viewMode, setViewMode] = useState(() => {
-    return typeof window !== "undefined" && window.innerWidth <= 768 ? "list" : "grid";
+    return typeof window !== "undefined" && window.innerWidth < 1024 ? "list" : "grid";
   });
   const { userInfo } = useContext(UserContext);
 
@@ -17,7 +17,7 @@ export default function IndexPage() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth < 1024) {
         setViewMode("list");
       }
     };
