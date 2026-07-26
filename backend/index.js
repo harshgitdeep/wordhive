@@ -259,6 +259,16 @@ app.get("/check-email/:email", async (req, res) => {
   }
 });
 
+app.get("/total-users", async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.json({ totalUsers: count });
+  } catch (error) {
+    console.error("Error fetching total users count:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 //-------------------------------------------------------
 // Blog Post Management
 //-------------------------------------------------------
@@ -296,15 +306,19 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
 
 app.put("/post/:id", uploadMiddleware.single("file"), async (req, res) => {
   const { token } = req.cookies;
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   try {
     const decoded = jwt.verify(token, secret);
     const { title, summary, content } = req.body;
 
     const postDoc = await Post.findById(req.params.id);
-    if (!postDoc) return res.status(404).json("Post not found");
+    if (!postDoc) return res.status(404).json({ error: "Post not found" });
 
-    const isAuthor = postDoc.author.equals(decoded.id);
-    if (!isAuthor) return res.status(403).json("You are not the author");
+    const isAuthor = String(postDoc.author) === String(decoded.id);
+    if (!isAuthor) return res.status(403).json({ error: "You are not the author" });
 
     if (req.file) {
       const { path } = req.file;
@@ -312,18 +326,23 @@ app.put("/post/:id", uploadMiddleware.single("file"), async (req, res) => {
         folder: "wordhive-uploads",
       });
       postDoc.cover = result.secure_url;
-      fs.unlinkSync(path);
+      if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+      }
     }
 
-    postDoc.title = title;
-    postDoc.summary = summary;
-    postDoc.content = content;
+    if (title !== undefined) postDoc.title = title;
+    if (summary !== undefined) postDoc.summary = summary;
+    if (content !== undefined) postDoc.content = content;
 
     await postDoc.save();
 
     res.json(postDoc);
   } catch (error) {
     console.error("Error updating post:", error);
+    if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -343,35 +362,45 @@ app.get("/post", async (req, res) => {
 
 app.get("/post/:id", async (req, res) => {
   const { id } = req.params;
-  const postDoc = await Post.findById(id).populate("author", ["username"]);
-  res.json(postDoc);
+  try {
+    const postDoc = await Post.findById(id).populate("author", ["username"]);
+    if (!postDoc) return res.status(404).json({ error: "Post not found" });
+    res.json(postDoc);
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 app.delete("/post/:id", async (req, res) => {
   const { token } = req.cookies;
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+  try {
+    const info = jwt.verify(token, secret);
     const { id } = req.params;
-    try {
-      const postDoc = await Post.findById(id);
-      const isAuthor =
-        JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-      if (!isAuthor) {
-        return res.status(400).json("You are not the author");
-      }
-      await Post.findByIdAndDelete(id);
-      res.json("Post deleted successfully");
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      res.status(500).json({ error: "Internal server error" });
+
+    const postDoc = await Post.findById(id);
+    if (!postDoc) {
+      return res.status(404).json({ error: "Post not found" });
     }
-  });
+
+    const isAuthor = String(postDoc.author) === String(info.id);
+    if (!isAuthor) {
+      return res.status(403).json({ error: "You are not the author" });
+    }
+
+    await Post.findByIdAndDelete(id);
+    res.json({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    if (error.name === "JsonWebTokenError" || error.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 
