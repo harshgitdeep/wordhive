@@ -69,9 +69,9 @@ export default function PostPage() {
       <time>{formattedDate}</time>
       <div className="author">@{postInfo.author.username}</div>
       <div className="action-row">
-        <button className="share-btn" onClick={handleShare}>
-          {copied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
-          <span>{copied ? "Link Copied!" : "Share Post"}</span>
+        <button className="share-btn" onClick={handleShare} aria-label="Share post">
+          {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
+          <span>{copied ? "Link Copied!" : "Share"}</span>
         </button>
         {userInfo && userInfo.id === postInfo.author._id && (
           <Link className="edit-btn" to={`/edit/${postInfo._id}`}>

@@ -192,7 +192,7 @@ export default function CreatePost() {
           {/* Button */}
           <button
             type="submit"
-            className="w-full rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 py-3 font-semibold text-white transition hover:from-amber-500 hover:to-amber-600 shadow-md shadow-amber-500/20"
+            className="w-full rounded-2xl bg-amber-500 py-3 font-bold text-white shadow-[0_4px_0_0_#b45309] hover:bg-amber-400 hover:-translate-y-0.5 hover:shadow-[0_6px_0_0_#b45309] active:translate-y-1 active:shadow-[0_1px_0_0_#b45309] transition-all duration-150"
           >
             🐝 Create New Story
           </button>

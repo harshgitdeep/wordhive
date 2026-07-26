@@ -272,7 +272,7 @@ export default function RegisterPage() {
             </div>
 
             {/* Button */}
-            <button className="w-full rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 py-3 font-semibold text-white transition hover:from-amber-500 hover:to-amber-600 shadow-md shadow-amber-500/20">
+            <button className="w-full rounded-2xl bg-amber-500 py-3 font-bold text-white shadow-md shadow-amber-500/20 hover:bg-amber-600 transition duration-150">
               Join the Hive
             </button>
 

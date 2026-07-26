@@ -1,16 +1,29 @@
 import Post from "../Post";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
-import { Search, Loader2, Users } from "lucide-react";
+import { Search, Loader2, Users, X, LayoutGrid, List } from "lucide-react";
 
 export default function IndexPage() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [viewMode, setViewMode] = useState(() => {
+    return typeof window !== "undefined" && window.innerWidth <= 768 ? "list" : "grid";
+  });
   const { userInfo } = useContext(UserContext);
 
   const [totalUsers, setTotalUsers] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setViewMode("list");
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/post`).then((response) => {
@@ -95,7 +108,7 @@ export default function IndexPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <a
               href="/create"
-              className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold px-8 py-3.5 shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0 text-sm"
+              className="inline-flex items-center justify-center rounded-xl bg-amber-500 text-white font-bold px-8 py-3.5 shadow-[0_4px_0_0_#b45309] hover:bg-amber-400 hover:-translate-y-0.5 hover:shadow-[0_6px_0_0_#b45309] active:translate-y-1 active:shadow-[0_1px_0_0_#b45309] transition-all duration-150 text-sm"
             >
               Start Writing 🐝
             </a>
@@ -110,15 +123,25 @@ export default function IndexPage() {
       )}
 
       {/* Search & Filter Row */}
-      <div className="search-filter-row mb-8">
+      <div id="explore-section" className="search-filter-container mb-8">
         <div className="search-input-wrapper">
-          <Search size={18} className="search-icon" />
+          <Search size={16} className="search-icon" />
           <input
             type="text"
             placeholder="Search stories, ideas or authors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          {searchQuery && (
+            <button
+              type="button"
+              className="search-clear-btn"
+              onClick={() => setSearchQuery("")}
+              aria-label="Clear search"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
 
         <div className="filter-actions">
@@ -130,13 +153,35 @@ export default function IndexPage() {
             <option value="newest">Latest First</option>
             <option value="oldest">Oldest First</option>
           </select>
+          <div className="layout-toggle-group">
+            <button
+              type="button"
+              className={`layout-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+              title="Grid View"
+              aria-label="Grid View"
+            >
+              <LayoutGrid size={15} />
+              <span>Grid</span>
+            </button>
+            <button
+              type="button"
+              className={`layout-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+              title="List View"
+              aria-label="List View"
+            >
+              <List size={15} />
+              <span>List</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Articles Section */}
       <div id="articles" className="w-full scroll-mt-28">
         {filteredAndSortedPosts.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className={`posts-container ${viewMode === 'list' ? 'view-mode-list' : 'view-mode-grid'}`}>
             {filteredAndSortedPosts.map((post) => (
               <Post key={post.id} {...post} />
             ))}

@@ -12,11 +12,11 @@
   --text-primary: #1E293B;
   --text-secondary: #64748B;
   --text-muted: #94A3B8;
-  --color-primary: #F59E0B;
+  --color-primary: #D97706;
+  /* Amber 600 */
+  --color-primary-hover: #B45309;
+  --color-accent: #F59E0B;
   /* Amber 500 */
-  --color-primary-hover: #D97706;
-  --color-accent: #FBBF24;
-  /* Honey Gold */
   --card-bg: #FFFFFF;
   --card-border: #E2E8F0;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.02);
