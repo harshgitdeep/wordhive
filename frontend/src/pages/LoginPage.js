@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import { LogIn } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -32,13 +33,16 @@ export default function LoginPage() {
       if (response.ok) {
         response.json().then((userInfo) => {
           setUserInfo(userInfo);
+          toast.success(`Logged in successfully as ${userInfo.username}!`);
           setRedirect("/");
         });
       } else {
         setError("Wrong username or password");
+        toast.error("Wrong username or password");
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     }
 
     setIsLoading(false);

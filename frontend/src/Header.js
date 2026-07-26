@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
+import { toast } from "react-hot-toast";
 
 export default function Header() {
   const { setUserInfo, userInfo } = useContext(UserContext);
@@ -36,6 +37,7 @@ export default function Header() {
       method: "POST",
     }).then(() => {
       setUserInfo(null);
+      toast.success("Logged out successfully!");
     });
   }
 

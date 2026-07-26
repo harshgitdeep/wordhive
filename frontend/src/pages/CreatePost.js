@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import Editor from "../Editor";
 import loadingGif from "./loading.gif";
+import { toast } from "react-hot-toast";
 
 export default function CreatePost() {
   const { userInfo } = useContext(UserContext);
@@ -22,6 +23,21 @@ export default function CreatePost() {
   const SUMMARY_MAX_LENGTH = 80;
 
   async function createNewPost(ev) {
+    ev.preventDefault();
+
+    if (!title) {
+      toast.error("Please enter a title.");
+      return;
+    }
+    if (!summary) {
+      toast.error("Please enter a summary.");
+      return;
+    }
+    if (!content) {
+      toast.error("Please enter some content.");
+      return;
+    }
+
     const data = new FormData();
     data.set("title", title);
     data.set("summary", summary);
@@ -33,18 +49,24 @@ export default function CreatePost() {
       data.set("file", files[0]);
     }
 
-    ev.preventDefault();
-
     setIsLoading(true); // Set loading to true before fetch
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/post`, {
-      method: "POST",
-      body: data,
-      credentials: "include",
-    });
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/post`, {
+        method: "POST",
+        body: data,
+        credentials: "include",
+      });
 
-    setIsLoading(false); // Set loading to false after fetch
-    if (response.ok) {
-      setRedirect(true);
+      setIsLoading(false); // Set loading to false after fetch
+      if (response.ok) {
+        toast.success("Post created successfully!");
+        setRedirect(true);
+      } else {
+        toast.error("Failed to create post. Please try again.");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast.error("Failed to create post. Please try again.");
     }
   }
 

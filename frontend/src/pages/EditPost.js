@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import Editor from "../Editor";
+import { toast } from "react-hot-toast";
 
 function EditPost() {
   const { userInfo } = useContext(UserContext);
@@ -28,11 +29,11 @@ function EditPost() {
             response.status,
             response.statusText,
           );
-          alert("Failed to fetch post. Please try again later.");
+          toast.error("Failed to fetch post. Please try again later.");
         }
       } catch (error) {
         console.error("Failed to fetch post:", error);
-        alert("Failed to fetch post. Please try again later.");
+        toast.error("Failed to fetch post. Please try again later.");
       }
     };
 
@@ -41,6 +42,20 @@ function EditPost() {
 
   async function updatePost(ev) {
     ev.preventDefault();
+
+    if (!title) {
+      toast.error("Please enter a title.");
+      return;
+    }
+    if (!summary) {
+      toast.error("Please enter a summary.");
+      return;
+    }
+    if (!content) {
+      toast.error("Please enter some content.");
+      return;
+    }
+
     const data = { title, summary, content };
 
     try {
@@ -54,6 +69,7 @@ function EditPost() {
         },
       );
       if (response.ok) {
+        toast.success("Post updated successfully!");
         setRedirect(true);
       } else {
         const errorText = await response.text();
@@ -63,11 +79,11 @@ function EditPost() {
           response.statusText,
           errorText,
         );
-        alert("Failed to update post. Please try again later.");
+        toast.error("Failed to update post. Please try again later.");
       }
     } catch (error) {
       console.error("Failed to update post:", error);
-      alert("Failed to update post. Please try again later.");
+      toast.error("Failed to update post. Please try again later.");
     }
   }
 
@@ -81,6 +97,7 @@ function EditPost() {
         },
       );
       if (response.ok) {
+        toast.success("Post deleted successfully!");
         setRedirect(true);
       } else {
         const errorText = await response.text();
@@ -90,11 +107,11 @@ function EditPost() {
           response.statusText,
           errorText,
         );
-        alert("Failed to delete post. Please try again later.");
+        toast.error("Failed to delete post. Please try again later.");
       }
     } catch (error) {
       console.error("Failed to delete post:", error);
-      alert("Failed to delete post. Please try again later.");
+      toast.error("Failed to delete post. Please try again later.");
     }
   }
 

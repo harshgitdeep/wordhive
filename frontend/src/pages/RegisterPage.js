@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import loadingGif from "./loading.gif";
+import { toast } from "react-hot-toast";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -69,19 +70,19 @@ export default function RegisterPage() {
   async function register(ev) {
     ev.preventDefault();
     if (!isValidEmail(email)) {
-      alert("Invalid email address!");
+      toast.error("Invalid email address!");
       return;
     }
     if (!isStrongPassword(password)) {
-      alert("Enter a strong password!");
+      toast.error("Enter a strong password!");
       return;
     }
     if (isUsernameAvailable) {
-      alert("Username is not available!");
+      toast.error("Username is not available!");
       return;
     }
     if (isEmailAvailable) {
-      alert("Email is already registered!");
+      toast.error("Email is already registered!");
       return;
     }
 
@@ -98,26 +99,26 @@ export default function RegisterPage() {
       );
 
       if (response.ok) {
-        alert("Registration successful. Mail Sent!");
+        toast.success("Registration successful. Mail Sent!");
         // Redirect to login page
         navigate("/login");
       } else {
         const data = await response.json();
         if (response.status === 400) {
           if (data.error === "Username already taken") {
-            alert("Username already taken");
+            toast.error("Username already taken");
           } else if (data.error === "Email already registered") {
-            alert("Email already registered");
+            toast.error("Email already registered");
           } else {
-            alert("Registration failed");
+            toast.error("Registration failed");
           }
         } else {
-          alert("Registration failed");
+          toast.error("Registration failed");
         }
       }
     } catch (error) {
       console.error("Error during registration:", error);
-      alert("Registration failed. Please try again later.");
+      toast.error("Registration failed. Please try again later.");
     } finally {
       setIsLoading(false);
     }
