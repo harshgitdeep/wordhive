@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import Editor from "../Editor";
-import loadingGif from "./loading.gif";
+import { Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 export default function CreatePost() {
@@ -73,7 +73,7 @@ export default function CreatePost() {
   if (isLoading) {
     return (
       <div className="loading-icon">
-        <img src={loadingGif} style={{ border: "none" }} alt="Loading..." />
+        <Loader2 className="animate-spin text-amber-500 w-12 h-12" />
       </div>
     );
   }
@@ -87,7 +87,7 @@ export default function CreatePost() {
       <div className="max-w-4xl mx-auto">
         {/* Heading */}
         <div className="text-center mb-10">
-          <div className="inline-block px-4 py-1.5 mb-5 text-xs font-semibold tracking-wide text-amber-700 bg-amber-50/60 rounded-full border border-amber-200/50">
+          <div className="inline-block px-4 py-1.5 mb-5 text-xs font-semibold tracking-wide text-slate-700 bg-slate-100 rounded-full border border-slate-200">
             🐝 Create New Story
           </div>
 
@@ -101,7 +101,7 @@ export default function CreatePost() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white border border-amber-100 rounded-3xl shadow-sm p-8">
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-8">
           <form onSubmit={createNewPost} className="space-y-6">
             {/* Title */}
             <div>
@@ -118,7 +118,7 @@ export default function CreatePost() {
                     setTitle(ev.target.value);
                   }
                 }}
-                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 bg-slate-50/50"
               />
 
               <div className="mt-2 text-right text-sm text-slate-400">
@@ -141,7 +141,7 @@ export default function CreatePost() {
                   setSummary(ev.target.value);
                 }
               }}
-              className="w-full rounded-2xl border border-gray-200 px-4 py-3 outline-none transition focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+              className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
             />
 
             <div className="mt-2 text-right text-sm text-gray-400">
@@ -155,7 +155,7 @@ export default function CreatePost() {
               Upload Cover Image
             </label>
 
-            <div className="rounded-2xl border-2 border-dashed border-gray-200 p-6 text-center hover:border-yellow-300 transition">
+            <div className="rounded-2xl border-2 border-dashed border-slate-200 p-6 text-center hover:border-slate-300 transition">
               <input
                 type="file"
                 onChange={(ev) => setFiles(ev.target.files)}
@@ -163,13 +163,13 @@ export default function CreatePost() {
                   file:mr-4
                   file:rounded-xl
                   file:border-0
-                  file:bg-yellow-100
+                  file:bg-slate-100
                   file:px-4
                   file:py-2
                   file:text-sm
                   file:font-medium
-                  file:text-yellow-800
-                  hover:file:bg-yellow-200"
+                  file:text-slate-800
+                  hover:file:bg-slate-200"
               />
 
               <p className="mt-3 text-sm text-gray-400">
@@ -184,7 +184,7 @@ export default function CreatePost() {
               Content
             </label>
 
-            <div className="overflow-hidden rounded-2xl border border-amber-100">
+            <div className="overflow-hidden rounded-2xl border border-slate-200">
               <Editor value={content} onChange={setContent} />
             </div>
           </div>

@@ -1,8 +1,7 @@
 import Post from "../Post";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
-import { Search } from "lucide-react";
-import HomeGif from "./homeloading.gif";
+import { Search, Loader2 } from "lucide-react";
 
 export default function IndexPage() {
   const [posts, setPosts] = useState([]);
@@ -23,12 +22,7 @@ export default function IndexPage() {
   if (isLoading) {
     return (
       <div className="loading-icon">
-        <img
-          className="loading-img"
-          src={HomeGif}
-          alt="Loading..."
-          style={{ border: "none" }}
-        />
+        <Loader2 className="animate-spin text-amber-500 w-12 h-12" />
       </div>
     );
   }

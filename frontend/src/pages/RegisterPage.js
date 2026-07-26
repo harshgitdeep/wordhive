@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import loadingGif from "./loading.gif";
+import { Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 export default function RegisterPage() {
@@ -129,7 +129,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         {/* Heading */}
         <div className="text-center mb-8">
-          <div className="inline-block px-4 py-1.5 mb-5 text-xs font-semibold tracking-wide text-amber-700 bg-amber-50/60 rounded-full border border-amber-200/50">
+          <div className="inline-block px-4 py-1.5 mb-5 text-xs font-semibold tracking-wide text-slate-700 bg-slate-100 rounded-full border border-slate-200">
             🐝 Join WordHive
           </div>
 
@@ -143,7 +143,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white border border-amber-100 rounded-3xl shadow-sm p-8">
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-8">
           <form className="space-y-5 register" onSubmit={register}>
             {/* Username */}
             <div>
@@ -156,7 +156,7 @@ export default function RegisterPage() {
                 placeholder="Choose a username"
                 value={username}
                 onChange={(ev) => setUsername(ev.target.value)}
-                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 bg-slate-50/50"
               />
 
               {/* Username Status */}
@@ -184,12 +184,12 @@ export default function RegisterPage() {
                 placeholder="Create a strong password"
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
-                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 bg-slate-50/50"
               />
             </div>
 
             {/* Password Rules */}
-            <div className="rounded-2xl border border-amber-100 bg-amber-50/10 p-5">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5">
               <h2 className="text-sm font-semibold text-slate-900 mb-4">
                 🔐 Password Requirements
               </h2>
@@ -254,7 +254,7 @@ export default function RegisterPage() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(ev) => setEmail(ev.target.value)}
-                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 bg-slate-50/50"
               />
 
               {/* Email Status */}
@@ -290,11 +290,7 @@ export default function RegisterPage() {
             {/* Loader */}
             {isLoading && (
               <div className="flex justify-center pt-4">
-                <img
-                  src={loadingGif}
-                  alt="Loading..."
-                  className="w-16 h-16 object-contain"
-                />
+                <Loader2 className="animate-spin text-amber-500 w-8 h-8" />
               </div>
             )}
           </form>

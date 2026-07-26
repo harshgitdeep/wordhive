@@ -57,7 +57,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* Top Badge */}
         <div className="text-center mb-8">
-          <div className="inline-block px-4 py-1.5 mb-5 text-xs font-semibold tracking-wide text-amber-700 bg-amber-50 rounded-full border border-amber-200/50">
+          <div className="inline-block px-4 py-1.5 mb-5 text-xs font-semibold tracking-wide text-slate-700 bg-slate-100 rounded-full border border-slate-200">
             🐝 Welcome Back
           </div>
 
@@ -71,7 +71,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-white border border-amber-100 rounded-3xl shadow-sm p-8">
+        <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-8">
           {/* Error */}
           {error && (
             <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -92,7 +92,7 @@ export default function LoginPage() {
                 placeholder="Enter your username"
                 value={username}
                 onChange={(ev) => setUsername(ev.target.value)}
-                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 bg-slate-50/50"
               />
             </div>
 
@@ -107,7 +107,7 @@ export default function LoginPage() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
-                className="w-full rounded-2xl border border-amber-100 px-4 py-3 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 bg-amber-50/20"
+                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 bg-slate-50/50"
               />
             </div>
 
