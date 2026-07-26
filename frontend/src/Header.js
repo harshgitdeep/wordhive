@@ -17,20 +17,6 @@ export default function Header() {
     });
   }, [setUserInfo]);
 
-  useEffect(() => {
-    const fetchUserCount = async () => {
-      try {
-        await fetch(
-          `${process.env.REACT_APP_API_URL}/total-users`,
-        );
-      } catch (error) {
-        console.error("Error fetching user count:", error);
-      }
-    };
-
-    fetchUserCount();
-  }, []);
-
   function logout() {
     fetch(`${process.env.REACT_APP_API_URL}/logout`, {
       credentials: "include",
@@ -47,9 +33,9 @@ export default function Header() {
     <header>
       <div className="nav-left" style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
         <Link to="/" className="logo" aria-label="WordHive Home" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', height: '57.59px' }}>
-          <span style={{ 
-            fontFamily: '"Kaushan Script", cursive', 
-            fontSize: '32px', 
+          <span style={{
+            fontFamily: '"Kaushan Script", cursive',
+            fontSize: '32px',
             color: '#000000',
             lineHeight: '57.59px',
             whiteSpace: 'nowrap'
@@ -60,7 +46,7 @@ export default function Header() {
         <div className="nav-links desktop-only">
           <Link to="/">Blogs</Link>
           <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
+          <a href="https://github.com/harshgitdeep" target="_blank" rel="noopener noreferrer">Contact</a>
         </div>
       </div>
       <nav className="desktop-only">
@@ -78,8 +64,8 @@ export default function Header() {
       </nav>
 
       {/* Hamburger menu button */}
-      <button 
-        className="menu-toggle" 
+      <button
+        className="menu-toggle"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         aria-label="Toggle Menu"
       >
@@ -97,7 +83,7 @@ export default function Header() {
         <div className="mobile-menu">
           <Link to="/" onClick={() => setIsMenuOpen(false)}>Blogs</Link>
           <Link to="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
-          <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+          <a href="https://github.com/harshgitdeep" target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)}>Contact</a>
           <div className="mobile-divider" />
           {username ? (
             <>

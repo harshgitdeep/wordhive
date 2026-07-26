@@ -35,7 +35,7 @@ export default function Footer() {
           <h4>Resources</h4>
           <ul>
             <li><Link to="/about">About the Hive</Link></li>
-            <li><Link to="/contact">Support</Link></li>
+            <li><a href="https://github.com/harshgitdeep" target="_blank" rel="noopener noreferrer">Contact</a></li>
           </ul>
         </div>
 

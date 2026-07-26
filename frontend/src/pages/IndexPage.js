@@ -1,7 +1,7 @@
 import Post from "../Post";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserContext";
-import { Search, Loader2 } from "lucide-react";
+import { Search, Loader2, Users } from "lucide-react";
 
 export default function IndexPage() {
   const [posts, setPosts] = useState([]);
@@ -10,13 +10,24 @@ export default function IndexPage() {
   const [sortBy, setSortBy] = useState("newest");
   const { userInfo } = useContext(UserContext);
 
+  const [totalUsers, setTotalUsers] = useState(0);
+
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/post`).then((response) => {
       response.json().then((posts) => {
         setPosts(posts);
-        setIsLoading(false); // Set loading to false when data is loaded
+        setIsLoading(false);
       });
     });
+
+    fetch(`${process.env.REACT_APP_API_URL}/total-users`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.totalUsers !== undefined) {
+          setTotalUsers(data.totalUsers);
+        }
+      })
+      .catch((err) => console.error("Error fetching total users:", err));
   }, []);
 
   if (isLoading) {
@@ -58,6 +69,29 @@ export default function IndexPage() {
           <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-8">
             WordHive is the modern publishing platform where creators write, share, and organize knowledge inside a thriving digital hive.
           </p>
+
+          {/* Total Users & Stats Display Card */}
+          <div className="bg-white/80 backdrop-blur border border-amber-200/70 shadow-xl shadow-amber-500/5 rounded-2xl p-6 max-w-md mx-auto mb-8 flex items-center justify-around">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1.5 text-3xl font-black text-amber-500">
+                <Users className="w-7 h-7 text-amber-500" />
+                <span>{totalUsers}</span>
+              </div>
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
+                Registered Writers
+              </div>
+            </div>
+            <div className="h-10 w-px bg-amber-200/60" />
+            <div className="text-center">
+              <div className="text-3xl font-black text-slate-800">
+                {posts.length}
+              </div>
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
+                Published Stories
+              </div>
+            </div>
+          </div>
+
           <div className="flex flex-wrap justify-center gap-4">
             <a
               href="/create"
