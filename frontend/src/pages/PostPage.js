@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { UserContext } from "../UserContext";
 import { Link } from "react-router-dom";
-import loadingGif from "./loading.gif";
+import { Loader2 } from "lucide-react";
 
 export default function PostPage() {
   const [postInfo, setPostInfo] = useState(null);
@@ -25,7 +25,7 @@ export default function PostPage() {
   if (isLoading) {
     return (
       <div className="loading-icon">
-        <img className="loading-img" src={loadingGif} alt="Loading..." />
+        <Loader2 className="animate-spin text-amber-500 w-12 h-12" />
       </div>
     );
   }

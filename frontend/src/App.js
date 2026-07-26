@@ -14,10 +14,12 @@ import Privacy from "./pages/Footer/Privacy";
 import Terms from "./pages/Footer/Terms";
 import Contact from "./pages/Footer/Contact";
 import { Toaster } from 'react-hot-toast';
+import ScrollToTop from "./ScrollToTop";
 
 function App() {
   return (
     <UserContextProvider>
+      <ScrollToTop />
       <Toaster position="top-center" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<Layout />}>
