@@ -20,31 +20,37 @@ export default function RegisterPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkUsernameAvailability = async () => {
-      if (username) {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/check-username/${username}`,
-        );
-        const data = await response.json();
-        setIsUsernameAvailable(!data.available);
-      }
-    };
+    if (!username) {
+      setIsUsernameAvailable(null);
+      return;
+    }
 
-    checkUsernameAvailability();
+    const timer = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/check-username/${username}`
+      );
+      const data = await response.json();
+      setIsUsernameAvailable(!data.available);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [username]);
 
   useEffect(() => {
-    const checkEmailAvailability = async () => {
-      if (email) {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/check-email/${email}`,
-        );
-        const data = await response.json();
-        setIsEmailAvailable(!data.available);
-      }
-    };
+    if (!email || !isValidEmail(email)) {
+      setIsEmailAvailable(null);
+      return;
+    }
 
-    checkEmailAvailability();
+    const timer = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/check-email/${email}`
+      );
+      const data = await response.json();
+      setIsEmailAvailable(!data.available);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [email]);
 
   useEffect(() => {
@@ -69,6 +75,10 @@ export default function RegisterPage() {
 
   async function register(ev) {
     ev.preventDefault();
+    if (!username.trim()) {
+      toast.error("Please enter a username!");
+      return;
+    }
     if (!isValidEmail(email)) {
       toast.error("Invalid email address!");
       return;
@@ -258,13 +268,19 @@ export default function RegisterPage() {
               />
 
               {/* Email Status */}
-              {email && isEmailAvailable === true && (
+              {email && !isValidEmail(email) && (
+                <p className="mt-2 text-sm text-red-500">
+                  Invalid email address
+                </p>
+              )}
+
+              {email && isValidEmail(email) && isEmailAvailable === true && (
                 <p className="mt-2 text-sm text-red-500">
                   Email is already registered
                 </p>
               )}
 
-              {email && isEmailAvailable === false && (
+              {email && isValidEmail(email) && isEmailAvailable === false && (
                 <p className="mt-2 text-sm text-green-600">
                   Email is available
                 </p>
