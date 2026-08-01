@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../context/UserContext";
 import { toast } from "react-hot-toast";
 import { PenSquare, LogOut, LogIn, UserPlus, BookOpen, Info, ExternalLink, Menu, X } from "lucide-react";
 

@@ -1,8 +1,8 @@
 import "react-quill/dist/quill.snow.css";
 import { useState, useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
-import Editor from "../Editor";
+import { UserContext } from "../context/UserContext";
+import Editor from "../components/Editor";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 

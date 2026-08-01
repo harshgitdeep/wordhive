@@ -11,12 +11,12 @@
   
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #FEF9C3;
+    background: #F59E0B;
   }
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #810909; /* color of the handle on hover */
+    background: #dc8c03; /* color of the handle on hover */
   }
   
   /* Styles for Firefox */

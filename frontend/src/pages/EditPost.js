@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext, useCallback } from "react";
 import { useParams, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
-import Editor from "../Editor";
+import { UserContext } from "../context/UserContext";
+import Editor from "../components/Editor";
 import { toast } from "react-hot-toast";
 import { Save, Trash2, AlertTriangle, X } from "lucide-react";
 

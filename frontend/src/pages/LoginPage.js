@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../context/UserContext";
 import { LogIn } from "lucide-react";
 import { toast } from "react-hot-toast";
 

@@ -1,6 +1,6 @@
-import Post from "../Post";
+import Post from "../components/Post";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../context/UserContext";
 import { Search, Loader2, Users, X, LayoutGrid, List } from "lucide-react";
 
 export default function IndexPage() {

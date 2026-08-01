@@ -1,20 +1,20 @@
-import './App.css';
-import './Scrollbar.css';
+import './styles/App.css';
+import './styles/Scrollbar.css';
 import {Route, Routes} from "react-router-dom";
-import Layout from "./Layout";
+import Layout from "./components/Layout";
 import IndexPage from "./pages/IndexPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import {UserContextProvider} from "./UserContext";
+import {UserContextProvider} from "./context/UserContext";
 import CreatePost from "./pages/CreatePost";
 import PostPage from "./pages/PostPage";
 import EditPost from "./pages/EditPost";
-import AboutUs from "./pages/Footer/AboutUs";
-import Privacy from "./pages/Footer/Privacy";
-import Terms from "./pages/Footer/Terms";
-import Contact from "./pages/Footer/Contact";
+import AboutUs from "./pages/AboutUs";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Contact from "./pages/Contact";
 import { Toaster } from 'react-hot-toast';
-import ScrollToTop from "./ScrollToTop";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (

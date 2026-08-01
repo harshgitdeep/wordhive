@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../context/UserContext";
 import { Link } from "react-router-dom";
 import { Loader2, Share2, Check } from "lucide-react";
 import toast from "react-hot-toast";
