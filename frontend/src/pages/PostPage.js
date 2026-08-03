@@ -53,8 +53,17 @@ export default function PostPage() {
 
   if (isLoading) {
     return (
-      <div className="loading-icon">
-        <Loader2 className="animate-spin text-amber-500 w-12 h-12" />
+      <div className="max-w-3xl mx-auto py-8 px-4 animate-pulse">
+        <div className="h-6 bg-slate-200 rounded w-1/4 mb-4"></div>
+        <div className="h-10 bg-slate-200 rounded w-4/5 mb-4"></div>
+        <div className="h-4 bg-slate-200 rounded w-1/3 mb-8"></div>
+        <div className="w-full h-80 bg-slate-200 rounded-2xl mb-8"></div>
+        <div className="space-y-3">
+          <div className="h-4 bg-slate-200 rounded w-full"></div>
+          <div className="h-4 bg-slate-200 rounded w-11/12"></div>
+          <div className="h-4 bg-slate-200 rounded w-4/5"></div>
+          <div className="h-4 bg-slate-200 rounded w-full"></div>
+        </div>
       </div>
     );
   }

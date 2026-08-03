@@ -1,4 +1,5 @@
 import Post from "../components/Post";
+import PostSkeleton from "../components/PostSkeleton";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { Search, Loader2, Users, X, LayoutGrid, List } from "lucide-react";
@@ -43,13 +44,7 @@ export default function IndexPage() {
       .catch((err) => console.error("Error fetching total users:", err));
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="loading-icon">
-        <Loader2 className="animate-spin text-amber-500 w-12 h-12" />
-      </div>
-    );
-  }
+  // We handle loading state gracefully inside the render tree with Skeleton Loaders
 
   const filteredAndSortedPosts = posts
     .filter((post) => {
@@ -180,7 +175,13 @@ export default function IndexPage() {
 
       {/* Articles Section */}
       <div id="articles" className="w-full scroll-mt-28">
-        {filteredAndSortedPosts.length > 0 ? (
+        {isLoading ? (
+          <div className={`posts-container ${viewMode === 'list' ? 'view-mode-list' : 'view-mode-grid'}`}>
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <PostSkeleton key={idx} viewMode={viewMode} />
+            ))}
+          </div>
+        ) : filteredAndSortedPosts.length > 0 ? (
           <div className={`posts-container ${viewMode === 'list' ? 'view-mode-list' : 'view-mode-grid'}`}>
             {filteredAndSortedPosts.map((post) => (
               <Post key={post.id} {...post} />
