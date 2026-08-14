@@ -1,19 +1,99 @@
 import { Link } from "react-router-dom";
-import { Code, Share2, Mail, Send, Sparkles, BookOpen, PenSquare, Info } from "lucide-react";
-import { useState } from "react";
+import { Code, Share2, Mail, Send, Sparkles, BookOpen, PenSquare, Info, CheckCircle2, UserCheck, BellOff } from "lucide-react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../context/UserContext";
 import { toast } from "react-hot-toast";
 
 export default function Footer() {
+  const { userInfo } = useContext(UserContext);
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const handleSubscribe = (e) => {
+  useEffect(() => {
+    // Check subscription status if user is logged in
+    if (userInfo && userInfo.username) {
+      fetch(`${process.env.REACT_APP_API_URL}/subscribe/status`, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && typeof data.isSubscribed === "boolean") {
+            setIsSubscribed(data.isSubscribed);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [userInfo]);
+
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email address");
+    const targetEmail = userInfo?.email || email.trim();
+
+    if (!userInfo && !targetEmail) {
+      toast.error("Please enter your email address!");
       return;
     }
-    toast.success("Welcome to the Hive newsletter! 🐝");
-    setEmail("");
+
+    if (!userInfo) {
+      const emailRegex = /\S+@\S+\.\S+/;
+      if (!emailRegex.test(targetEmail)) {
+        toast.error("Please enter a valid email address!");
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/subscribe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email: targetEmail }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message || "Welcome to the Hive newsletter! 🐝");
+        setIsSubscribed(true);
+        setEmail("");
+      } else {
+        toast.error(data.error || "Failed to subscribe. Please try again.");
+      }
+    } catch (err) {
+      console.error("Newsletter subscription error:", err);
+      toast.error("Subscription failed. Check network connection.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUnsubscribe = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/unsubscribe`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email: userInfo?.email || email }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message || "Unsubscribed from newsletter");
+        setIsSubscribed(false);
+      } else {
+        toast.error(data.error || "Failed to unsubscribe.");
+      }
+    } catch (err) {
+      toast.error("Failed to unsubscribe. Server error.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -27,21 +107,59 @@ export default function Footer() {
           <h3>Stay updated with fresh stories and ideas</h3>
           <p>Get weekly curated digests of top articles directly in your inbox.</p>
         </div>
-        <form onSubmit={handleSubscribe} className="newsletter-form">
-          <div className="newsletter-input-group">
-            <Mail className="mail-icon" />
-            <input
-              type="email"
-              placeholder="Enter your email address..."
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <button type="submit" className="btn-subscribe">
-              <span>Subscribe</span>
-              <Send className="w-4 h-4" />
-            </button>
+
+        {userInfo ? (
+          /* Logged In User State - No email input needed */
+          <div className="newsletter-form">
+            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 w-full">
+              {isSubscribed ? (
+                <div className="flex items-center gap-2">
+                  <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-sm">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>You are Subscribed To Wordhive Newsletter ({userInfo.email || `@${userInfo.username}`})</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleUnsubscribe}
+                    disabled={isSubmitting}
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold text-xs shadow-sm transition active:scale-95"
+                    title="Unsubscribe from newsletter"
+                  >
+                    <BellOff className="w-3.5 h-3.5" />
+                    <span>Unsubscribe</span>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubscribe}
+                  disabled={isSubmitting}
+                  className="btn-subscribe px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-sm shadow-md transition flex items-center gap-2"
+                >
+                  <UserCheck className="w-4 h-4" />
+                  <span>{isSubmitting ? "Subscribing..." : "Subscribe to Newsletter"}</span>
+                </button>
+              )}
+            </div>
           </div>
-        </form>
+        ) : (
+          /* Guest User State - Email input field */
+          <form onSubmit={handleSubscribe} className="newsletter-form">
+            <div className="newsletter-input-group">
+              <Mail className="mail-icon" />
+              <input
+                type="email"
+                placeholder="Enter your email address..."
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <button type="submit" className="btn-subscribe" disabled={isSubmitting}>
+                <span>{isSubmitting ? "Subscribing..." : "Subscribe"}</span>
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+          </form>
+        )}
       </div>
 
       <div className="footer-grid">

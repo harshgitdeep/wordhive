@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Post from "../components/Post";
 import PostSkeleton from "../components/PostSkeleton";
 import { UserContext } from "../context/UserContext";
-import { BookOpen, Calendar, ArrowLeft, Edit3, X, PenSquare } from "lucide-react";
+import { BookOpen, Calendar, ArrowLeft, Edit3, X, PenSquare, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { getUserAvatarStyle } from "../utils/avatarColor";
@@ -22,7 +22,23 @@ export default function UserProfilePage() {
   const [editName, setEditName] = useState("");
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (isEditing && userInfo) {
+      fetch(`${process.env.REACT_APP_API_URL}/subscribe/status`, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && typeof data.isSubscribed === "boolean") {
+            setIsSubscribed(data.isSubscribed);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isEditing, userInfo]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -285,6 +301,59 @@ export default function UserProfilePage() {
                   placeholder="Tell readers about yourself..."
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-sm font-medium resize-none"
                 />
+              </div>
+
+              {/* Newsletter Subscription Status & Toggle */}
+              <div className="pt-2">
+                <label className="block text-xs font-bold uppercase text-slate-500 mb-2">
+                  Newsletter Membership
+                </label>
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-amber-50/60 border border-amber-200/80">
+                  <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={isSubscribed}
+                      onChange={async (e) => {
+                        const checked = e.target.checked;
+                        setIsSubscribed(checked);
+                        const endpoint = checked ? "/subscribe" : "/unsubscribe";
+                        try {
+                          const res = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            credentials: "include",
+                            body: JSON.stringify({ email: profileData?.user?.email }),
+                          });
+                          const data = await res.json();
+                          if (res.ok) {
+                            toast.success(data.message || (checked ? "Subscribed to newsletter!" : "Unsubscribed from newsletter"));
+                          } else {
+                            setIsSubscribed(!checked);
+                            toast.error(data.error || "Failed to update subscription");
+                          }
+                        } catch (err) {
+                          setIsSubscribed(!checked);
+                          toast.error("Failed to update subscription. Server error.");
+                        }
+                      }}
+                      className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 accent-amber-500 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-slate-800">
+                      Subscribed to WordHive Newsletter 🐝
+                    </span>
+                  </label>
+                  
+                  {isSubscribed ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-700 bg-emerald-100/80 px-2.5 py-1 rounded-lg">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                      <span>Subscribed</span>
+                    </span>
+                  ) : (
+                    <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg">
+                      Not Subscribed
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Action Buttons Footer */}

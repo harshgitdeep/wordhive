@@ -22,6 +22,7 @@ if (process.env.NODE_ENV === "production") {
 
 const User = require("./models/User");
 const Post = require("./models/Post");
+const Subscriber = require("./models/Subscriber");
 
 const app = express();
 const salt = bcrypt.genSaltSync(10);
@@ -98,10 +99,7 @@ app.use(async (req, res, next) => {
   try {
     if (!cachedDbConnection) {
       console.log("Connecting to MongoDB...");
-      cachedDbConnection = mongoose.connect(process.env.MONGO_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      cachedDbConnection = mongoose.connect(process.env.MONGO_URI);
     }
     await cachedDbConnection;
     console.log("Connected to MongoDB successfully");
@@ -568,6 +566,127 @@ app.delete("/post/:id", async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//-------------------------------------------------------
+// Newsletter Subscription Endpoint
+//-------------------------------------------------------
+
+app.post("/subscribe", async (req, res) => {
+  const { email } = req.body;
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    return res.status(400).json({ error: "Please provide a valid email address" });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+
+  try {
+    const existing = await Subscriber.findOne({ email: cleanEmail });
+    if (existing) {
+      return res.status(200).json({ message: "You are already subscribed to the Hive newsletter! 🐝" });
+    }
+
+    const subscriberDoc = await Subscriber.create({ email: cleanEmail });
+
+    // Dispatch Welcome Newsletter Email via Nodemailer
+    try {
+      const emailPass = process.env.NODEMAILER_PASS || process.env.EMAIL_PASS;
+      const emailUser = process.env.EMAIL_USER || "wordhiveblogs@gmail.com";
+
+      if (emailPass) {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: {
+            user: emailUser,
+            pass: emailPass,
+          },
+        });
+
+        await transporter.sendMail({
+          from: `"WordHive Newsletter" <${emailUser}>`,
+          to: cleanEmail,
+          subject: "Welcome to WordHive Newsletter 🐝",
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 550px; margin: 0 auto; padding: 24px; border: 1px solid #fef3c7; background-color: #fff8f0; border-radius: 16px;">
+              <h2 style="color: #d97706; margin-top: 0;">Welcome to WordHive! 🐝</h2>
+              <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+                Thank you for subscribing to our newsletter! You will now receive curated digests of top articles and creator insights directly in your inbox.
+              </p>
+              <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #fed7aa; color: #94a3b8; font-size: 12px; text-align: center;">
+                WordHive Inc. • Empowering writers worldwide
+              </div>
+            </div>
+          `,
+        });
+      }
+    } catch (mailErr) {
+      console.error("Nodemailer newsletter dispatch log:", mailErr.message);
+    }
+
+    res.json({ message: "Welcome to the Hive newsletter! 🐝", subscriber: subscriberDoc });
+  } catch (error) {
+    console.error("Error subscribing email:", error);
+    res.status(500).json({ error: "Failed to subscribe. Please try again later." });
+  }
+});
+
+app.get("/subscribe/status", async (req, res) => {
+  const token = getToken(req);
+  const emailParam = req.query.email;
+
+  let targetEmail = emailParam;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, secret);
+      const userDoc = await User.findById(decoded.id);
+      if (userDoc && userDoc.email) {
+        targetEmail = userDoc.email;
+      }
+    } catch (e) {
+      // Ignore token decode errors
+    }
+  }
+
+  if (!targetEmail) {
+    return res.json({ isSubscribed: false });
+  }
+
+  try {
+    const existing = await Subscriber.findOne({ email: targetEmail.trim().toLowerCase() });
+    res.json({ isSubscribed: !!existing, email: targetEmail });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/unsubscribe", async (req, res) => {
+  const token = getToken(req);
+  let targetEmail = req.body.email;
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, secret);
+      const userDoc = await User.findById(decoded.id);
+      if (userDoc && userDoc.email) {
+        targetEmail = userDoc.email;
+      }
+    } catch (e) {}
+  }
+
+  if (!targetEmail || !/\S+@\S+\.\S+/.test(targetEmail)) {
+    return res.status(400).json({ error: "Please provide a valid email address" });
+  }
+
+  try {
+    await Subscriber.findOneAndDelete({ email: targetEmail.trim().toLowerCase() });
+    res.json({ message: "You have successfully unsubscribed from the Hive newsletter." });
+  } catch (error) {
+    console.error("Error unsubscribing email:", error);
+    res.status(500).json({ error: "Failed to unsubscribe. Please try again later." });
   }
 });
 
