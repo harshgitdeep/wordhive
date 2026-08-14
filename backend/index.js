@@ -310,8 +310,8 @@ app.get("/user/:username", async (req, res) => {
   const { username } = req.params;
   try {
     const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const userDoc = await User.findOne({ 
-      username: new RegExp(`^${escapedUsername}$`, "i") 
+    const userDoc = await User.findOne({
+      username: new RegExp(`^${escapedUsername}$`, "i")
     }).select("-password");
 
     if (userDoc) {
