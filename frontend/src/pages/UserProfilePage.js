@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Post from "../components/Post";
 import PostSkeleton from "../components/PostSkeleton";
 import { UserContext } from "../context/UserContext";
-import { User, BookOpen, Calendar, ArrowLeft, Edit3, Trash2, X, PenSquare } from "lucide-react";
+import { User, BookOpen, Calendar, ArrowLeft, Edit3, X, PenSquare } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 
@@ -132,31 +132,6 @@ export default function UserProfilePage() {
       console.error("Error updating profile:", err);
       toast.error("Failed to update profile. Server error.");
       setIsSaving(false);
-    }
-  };
-
-  const handleDeletePost = async (postId) => {
-    if (!window.confirm("Are you sure you want to delete this story?")) return;
-
-    try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/post/${postId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      if (res.ok) {
-        toast.success("Story deleted successfully!");
-        setProfileData((prev) => ({
-          ...prev,
-          posts: prev.posts.filter((p) => p._id !== postId),
-        }));
-      } else {
-        const errJson = await res.json();
-        toast.error(errJson.error || "Failed to delete story");
-      }
-    } catch (err) {
-      console.error("Error deleting post:", err);
-      toast.error("Failed to delete story");
     }
   };
 
@@ -363,24 +338,19 @@ export default function UserProfilePage() {
         {posts.length > 0 ? (
           <div className="posts-container view-mode-grid">
             {posts.map((post) => (
-              <div key={post._id} className="relative group">
-                <Post {...post} />
+              <div key={post._id} className="flex flex-col bg-white border border-amber-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
+                <div className="flex-1">
+                  <Post {...post} />
+                </div>
                 {isOwnProfile && (
-                  <div className="mt-2 flex items-center justify-end gap-2 px-1">
+                  <div className="p-3 bg-amber-50/40 border-t border-amber-100 flex items-center justify-end">
                     <Link
                       to={`/edit/${post._id}`}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200/70 hover:bg-amber-100 px-3 py-1.5 rounded-lg transition"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-white border border-amber-200 hover:bg-amber-100/70 px-4 py-1.5 rounded-lg shadow-sm transition"
                     >
-                      <PenSquare className="w-3.5 h-3.5" />
-                      <span>Edit</span>
+                      <PenSquare className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Edit Story</span>
                     </Link>
-                    <button
-                      onClick={() => handleDeletePost(post._id)}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-red-600 bg-red-50 border border-red-200/70 hover:bg-red-100 px-3 py-1.5 rounded-lg transition"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span>Delete</span>
-                    </button>
                   </div>
                 )}
               </div>

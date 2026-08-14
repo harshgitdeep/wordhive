@@ -1107,13 +1107,14 @@ footer.saas-footer {
 .newsletter-form {
   flex: 1;
   max-width: 440px;
-  min-width: 300px;
+  width: 100%;
 }
 
 .newsletter-input-group {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .newsletter-input-group .mail-icon {
@@ -1122,11 +1123,13 @@ footer.saas-footer {
   width: 18px;
   height: 18px;
   color: var(--text-muted);
+  z-index: 2;
 }
 
 .newsletter-input-group input {
+  width: 100%;
   padding-left: 46px;
-  padding-right: 130px;
+  padding-right: 125px;
   margin-bottom: 0;
   height: 48px;
   background: #ffffff;
@@ -1149,6 +1152,7 @@ footer.saas-footer {
   gap: 6px;
   box-shadow: 0 3px 0 #b45309;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .newsletter-input-group .btn-subscribe:hover {
@@ -1160,6 +1164,45 @@ footer.saas-footer {
 .newsletter-input-group .btn-subscribe:active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 #b45309;
+}
+
+@media screen and (max-width: 540px) {
+  .footer-top-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .newsletter-form {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .newsletter-input-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .newsletter-input-group .mail-icon {
+    top: 15px;
+  }
+
+  .newsletter-input-group input {
+    padding-right: 20px;
+    border-radius: 14px;
+    height: 48px;
+  }
+
+  .newsletter-input-group .btn-subscribe {
+    position: relative;
+    right: 0;
+    width: 100%;
+    height: 46px;
+    justify-content: center;
+    border-radius: 14px;
+    font-size: 0.95rem;
+  }
 }
 
 .footer-grid {
@@ -1652,4 +1695,55 @@ footer.saas-footer {
   background: linear-gradient(90deg, rgba(241, 245, 249, 0.8) 25%, rgba(226, 232, 240, 0.9) 37%, rgba(241, 245, 249, 0.8) 63%);
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite ease-in-out;
+}
+
+/* Editorial WYSIWYG Editor Canvas (Matching PostPage Article Typography) */
+.editorial-canvas-wrapper .ql-toolbar.ql-snow {
+  border: none !important;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2) !important;
+  background-color: #fefce8 !important;
+  padding: 12px 16px !important;
+}
+
+.editorial-canvas-wrapper .ql-container.ql-snow {
+  border: none !important;
+  font-family: inherit !important;
+}
+
+.editorial-canvas-wrapper .ql-editor {
+  min-height: 340px !important;
+  font-size: 1.1rem !important;
+  line-height: 1.8 !important;
+  color: var(--text-secondary, #334155) !important;
+  padding: 24px 28px !important;
+}
+
+.editorial-canvas-wrapper .ql-editor p {
+  margin-bottom: 20px !important;
+}
+
+.editorial-canvas-wrapper .ql-editor h1 {
+  font-size: 2.2rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  margin-top: 24px !important;
+  margin-bottom: 16px !important;
+  color: #0f172a !important;
+}
+
+.editorial-canvas-wrapper .ql-editor h2 {
+  font-size: 1.65rem !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  margin-top: 20px !important;
+  margin-bottom: 12px !important;
+  color: #1e293b !important;
+}
+
+.editorial-canvas-wrapper .ql-editor blockquote {
+  border-left: 4px solid #f59e0b !important;
+  padding-left: 18px !important;
+  margin: 20px 0 !important;
+  font-style: italic !important;
+  color: #475569 !important;
 }
