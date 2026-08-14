@@ -2,7 +2,7 @@ import Post from "../components/Post";
 import PostSkeleton from "../components/PostSkeleton";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import { Search, Loader2, Users, X, LayoutGrid, List } from "lucide-react";
+import { Search, Users, X, LayoutGrid, List, Sparkles, PenTool, BookOpen, ArrowRight, TrendingUp } from "lucide-react";
 
 export default function IndexPage() {
   const [posts, setPosts] = useState([]);
@@ -15,6 +15,7 @@ export default function IndexPage() {
   const { userInfo } = useContext(UserContext);
 
   const [totalUsers, setTotalUsers] = useState(0);
+  const [isUsersLoading, setIsUsersLoading] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -40,8 +41,12 @@ export default function IndexPage() {
         if (data.totalUsers !== undefined) {
           setTotalUsers(data.totalUsers);
         }
+        setIsUsersLoading(false);
       })
-      .catch((err) => console.error("Error fetching total users:", err));
+      .catch((err) => {
+        console.error("Error fetching total users:", err);
+        setIsUsersLoading(false);
+      });
   }, []);
 
   // We handle loading state gracefully inside the render tree with Skeleton Loaders
@@ -63,56 +68,82 @@ export default function IndexPage() {
     });
 
   return (
-    <div className="w-full py-6">
+    <div className="w-full py-4">
       {/* SaaS Hero Section (Visible only when user is not logged in) */}
       {!userInfo?.username && (
-        <section className="text-center py-16 px-4 max-w-4xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-amber-700 bg-amber-50/60 rounded-full border border-amber-200/50 uppercase">
-            🐝 Swarm intelligence for ideas
-          </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-none mb-6">
-            Where Ideas Swarm.<br />
-            <span className="text-amber-500">Stories Become Honey.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed mb-8">
-            WordHive is the modern publishing platform where creators write, share, and organize knowledge inside a thriving digital hive.
-          </p>
+        <section className="relative overflow-hidden mb-16 rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-200/60 p-8 sm:p-12 md:p-16 shadow-xl shadow-amber-500/5 text-center">
+          {/* Ambient Glows */}
+          <div className="absolute top-0 right-1/4 -mt-20 w-96 h-96 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 -mb-20 w-80 h-80 bg-amber-300/20 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Total Users & Stats Display Card */}
-          <div className="bg-white/80 backdrop-blur border border-amber-200/70 shadow-xl shadow-amber-500/5 rounded-2xl p-6 max-w-md mx-auto mb-8 flex items-center justify-around">
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-1.5 text-3xl font-black text-amber-500">
-                <Users className="w-7 h-7 text-amber-500" />
-                <span>{totalUsers}</span>
-              </div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
-                Registered Writers
-              </div>
+          <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100/90 border border-amber-300/70 text-amber-900 text-xs font-bold tracking-wide uppercase shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+              <span>A Place to Write & Share</span>
             </div>
-            <div className="h-10 w-px bg-amber-200/60" />
-            <div className="text-center">
-              <div className="text-3xl font-black text-slate-800">
-                {posts.length}
-              </div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mt-1">
-                Published Stories
-              </div>
-            </div>
-          </div>
 
-          <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="/create"
-              className="inline-flex items-center justify-center rounded-xl bg-amber-500 text-white font-bold px-8 py-3.5 shadow-[0_4px_0_0_#b45309] hover:bg-amber-400 hover:-translate-y-0.5 hover:shadow-[0_6px_0_0_#b45309] active:translate-y-1 active:shadow-[0_1px_0_0_#b45309] transition-all duration-150 text-sm"
-            >
-              Start Writing 🐝
-            </a>
-            <a
-              href="#articles"
-              className="inline-flex items-center justify-center rounded-xl bg-white border border-amber-200 text-amber-700 font-bold px-8 py-3.5 hover:bg-amber-50/50 transition transform hover:-translate-y-0.5 active:translate-y-0 text-sm"
-            >
-              Explore Articles
-            </a>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
+              Share Your Stories. <br />
+              <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 bg-clip-text text-transparent">
+                Read Great Blogs.
+              </span>
+            </h1>
+
+            <p className="text-base sm:text-lg md:text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto font-medium">
+              WordHive is a simple and clean blogging platform. Write your articles, share your thoughts, and discover inspiring posts from writers everywhere.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap justify-center items-center gap-4 pt-2">
+              <a
+                href="/create"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold px-8 py-3.5 shadow-lg shadow-amber-500/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 text-base"
+              >
+                <PenTool className="w-5 h-5" />
+                <span>Start Writing</span>
+                <ArrowRight className="w-5 h-5" />
+              </a>
+              <a
+                href="#explore-section"
+                className="inline-flex items-center gap-2 rounded-xl bg-white border border-amber-200 hover:border-amber-300 text-slate-700 font-bold px-7 py-3.5 shadow-sm transition hover:bg-amber-50/50 text-base"
+              >
+                <BookOpen className="w-5 h-5 text-amber-600" />
+                <span>Read Blogs</span>
+              </a>
+            </div>
+
+            {/* Simple Metrics Bar (Shown only when loaded) */}
+            {(!isUsersLoading || !isLoading) && (
+              <div className="pt-6 border-t border-amber-200/50 flex flex-wrap justify-center items-center gap-8 text-slate-600">
+                {!isUsersLoading && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-300/40 flex items-center justify-center text-amber-600">
+                      <Users className="w-5 h-5" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-xl font-black text-slate-900 leading-none">{totalUsers}</div>
+                      <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Active Writers</div>
+                    </div>
+                  </div>
+                )}
+
+                {!isUsersLoading && !isLoading && (
+                  <div className="h-8 w-px bg-amber-200/60 hidden sm:block" />
+                )}
+
+                {!isLoading && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-300/40 flex items-center justify-center text-amber-600">
+                      <TrendingUp className="w-5 h-5" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-xl font-black text-slate-900 leading-none">{posts.length}</div>
+                      <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Published Articles</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
       )}
