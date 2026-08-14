@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Hexagon, Code, Share2, Mail, Heart, Send, Sparkles, BookOpen, PenSquare, Info } from "lucide-react";
+import { Code, Share2, Mail, Send, Sparkles, BookOpen, PenSquare, Info } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -105,6 +105,12 @@ export default function Footer() {
               <a href="https://github.com/harshgitdeep" target="_blank" rel="noopener noreferrer">
                 <Mail className="w-3.5 h-3.5 inline mr-2 text-amber-500" />
                 <span>Contact Developer</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/harshgitdeep/wordhive" target="_blank" rel="noopener noreferrer">
+                <Code className="w-3.5 h-3.5 inline mr-2 text-amber-500" />
+                <span>Source Code</span>
               </a>
             </li>
           </ul>

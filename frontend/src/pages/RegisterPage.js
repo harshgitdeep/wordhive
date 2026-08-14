@@ -163,9 +163,9 @@ export default function RegisterPage() {
 
               <input
                 type="text"
-                placeholder="Choose a username"
+                placeholder="Choose a username (lowercase only)"
                 value={username}
-                onChange={(ev) => setUsername(ev.target.value)}
+                onChange={(ev) => setUsername(ev.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, ""))}
                 className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100 bg-slate-50/50"
               />
 

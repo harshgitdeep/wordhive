@@ -2,7 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { toast } from "react-hot-toast";
-import { PenSquare, LogOut, LogIn, UserPlus, BookOpen, Info, ExternalLink, Menu, X } from "lucide-react";
+import { PenSquare, LogOut, LogIn, UserPlus, BookOpen, Info, ExternalLink, Menu, X, User } from "lucide-react";
+import { getUserAvatarStyle } from "../utils/avatarColor";
 
 export default function Header() {
   const { setUserInfo, userInfo } = useContext(UserContext);
@@ -31,6 +32,7 @@ export default function Header() {
 
   const username = userInfo?.username;
   const currentPath = location.pathname;
+  const avatarStyle = getUserAvatarStyle(username);
 
   return (
     <header className="saas-header">
@@ -67,13 +69,33 @@ export default function Header() {
               <PenSquare className="w-4 h-4" />
               <span>Create Story</span>
             </Link>
-            <div className="user-pill">
-              <span className="user-avatar">{username.charAt(0).toUpperCase()}</span>
-              <span className="user-name">@{username}</span>
-              <button onClick={logout} className="btn-logout" title="Logout">
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
+            
+            {/* Instagram Story-Style Profile Button Link */}
+            <Link
+              to={`/user/${username}`}
+              className={`group inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full transition-all duration-200 ${
+                currentPath === `/user/${username}`
+                  ? "bg-amber-100/90 ring-2 ring-amber-400 text-slate-900 font-bold shadow-sm"
+                  : "bg-slate-50/80 hover:bg-slate-100/90 text-slate-800 hover:text-slate-900 border border-slate-200/80"
+              }`}
+              title="View Profile"
+            >
+              {/* Instagram Story Gradient Ring */}
+              <div className="relative p-[2px] rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-amber-400 shadow-sm transition transform group-hover:scale-105">
+                <div className="p-[1.5px] rounded-full bg-white">
+                  <div className={`w-6 h-6 rounded-full ${avatarStyle.palette.bg} ${avatarStyle.palette.text} font-black text-[11px] flex items-center justify-center shrink-0 uppercase tracking-tight`}>
+                    {avatarStyle.initial}
+                  </div>
+                </div>
+              </div>
+              <span className="text-xs font-bold tracking-tight text-slate-800 group-hover:text-amber-700 transition">
+                {username}
+              </span>
+            </Link>
+
+            <button onClick={logout} className="btn-logout" title="Logout">
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         ) : (
           <div className="auth-btn-group">
@@ -131,10 +153,23 @@ export default function Header() {
           <div className="mobile-divider" />
           {username ? (
             <div className="mobile-user-section">
-              <div className="mobile-user-info">
-                <span className="user-avatar">{username.charAt(0).toUpperCase()}</span>
-                <span>@{username}</span>
-              </div>
+              <Link
+                to={`/user/${username}`}
+                onClick={() => setIsMenuOpen(false)}
+                className="mobile-user-info flex items-center justify-between p-2.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 hover:bg-amber-100/50 transition"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-[2px] rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-amber-400">
+                    <div className="p-[1.5px] rounded-full bg-white">
+                      <div className={`w-7 h-7 rounded-full ${avatarStyle.palette.bg} ${avatarStyle.palette.text} font-black text-xs flex items-center justify-center shrink-0 uppercase`}>
+                        {avatarStyle.initial}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="font-extrabold text-sm text-slate-900 tracking-tight">{username}</span>
+                </div>
+                <User className="w-4 h-4 text-amber-600" />
+              </Link>
               <Link to="/create" onClick={() => setIsMenuOpen(false)} className="btn-create-story w-full text-center justify-center">
                 <PenSquare className="w-4 h-4" />
                 <span>Create Story</span>

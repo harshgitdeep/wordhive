@@ -219,7 +219,7 @@ function EditPost() {
         <button
           type="button"
           onClick={() => setShowDeleteModal(true)}
-          style={{ width: "auto" }}
+          style={{ width: "auto" }} 
           className="inline-flex items-center gap-1.5 px-4 py-3 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold text-xs shadow-sm transition active:scale-95 cursor-pointer shrink-0"
           title="Delete Story"
         >

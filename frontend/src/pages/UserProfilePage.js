@@ -3,9 +3,10 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Post from "../components/Post";
 import PostSkeleton from "../components/PostSkeleton";
 import { UserContext } from "../context/UserContext";
-import { User, BookOpen, Calendar, ArrowLeft, Edit3, X, PenSquare } from "lucide-react";
+import { BookOpen, Calendar, ArrowLeft, Edit3, X, PenSquare } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import { getUserAvatarStyle } from "../utils/avatarColor";
 
 export default function UserProfilePage() {
   const { username } = useParams();
@@ -61,7 +62,7 @@ export default function UserProfilePage() {
         setIsLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching user profile:", err);
+        console.error("Error loading profile:", err);
         setError(err.message);
         setIsLoading(false);
       });
@@ -138,35 +139,19 @@ export default function UserProfilePage() {
   if (isLoading) {
     return (
       <div className="max-w-5xl mx-auto py-8 px-4 space-y-8">
-        <div className="rounded-3xl bg-amber-50/50 border border-amber-200/60 p-8 sm:p-10 animate-pulse flex flex-col md:flex-row items-center gap-6">
-          <div className="w-24 h-24 rounded-full bg-slate-200" />
-          <div className="space-y-3 text-center md:text-left flex-1">
-            <div className="h-8 bg-slate-200 rounded w-48 mx-auto md:mx-0" />
-            <div className="h-4 bg-slate-200 rounded w-64 mx-auto md:mx-0" />
-            <div className="h-4 bg-slate-200 rounded w-full max-w-md mx-auto md:mx-0" />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 3 }).map((_, idx) => (
-            <PostSkeleton key={idx} />
-          ))}
-        </div>
+        <PostSkeleton />
       </div>
     );
   }
 
   if (error || !profileData) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center py-12 px-4 text-center">
-        <div className="max-w-md w-full bg-white border border-amber-200/80 p-8 rounded-3xl shadow-xl space-y-4">
-          <div className="inline-flex p-4 rounded-full bg-amber-100 text-amber-600">
-            <User className="w-8 h-8" />
-          </div>
-          <h2 className="text-2xl font-black text-slate-800">User Not Found</h2>
-          <p className="text-sm text-slate-600">
-            We couldn't find a writer named {username}.
-          </p>
+      <div className="max-w-5xl mx-auto py-16 px-4 text-center space-y-4">
+        <h2 className="text-3xl font-black text-slate-900">User Not Found</h2>
+        <p className="text-slate-500 font-medium max-w-md mx-auto">
+          The author profile you are looking for does not exist or has been removed.
+        </p>
+        <div className="pt-4">
           <Link
             to="/"
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-sm shadow transition"
@@ -181,6 +166,7 @@ export default function UserProfilePage() {
 
   const { user, posts } = profileData;
   const joinedDate = user.createdAt ? format(new Date(user.createdAt), "MMMM yyyy") : null;
+  const avatarStyle = getUserAvatarStyle(user.username);
 
   return (
     <div className="max-w-5xl mx-auto py-6 px-4 space-y-10">
@@ -195,9 +181,9 @@ export default function UserProfilePage() {
       {/* User Header Profile Card */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-200/80 p-8 sm:p-10 shadow-xl shadow-amber-500/5">
         <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
-          {/* Avatar Circle */}
-          <div className="w-24 h-24 rounded-full bg-amber-500 text-white font-black text-3xl flex items-center justify-center shadow-lg shadow-amber-500/30 uppercase border-4 border-white">
-            {user.username.charAt(0)}
+          {/* Alphabetical Color Initial Avatar */}
+          <div className={`w-24 h-24 rounded-full ${avatarStyle.palette.bg} ${avatarStyle.palette.text} border-4 border-white shadow-xl flex items-center justify-center font-black text-3xl shrink-0 uppercase tracking-tight`}>
+            {avatarStyle.initial}
           </div>
 
           <div className="space-y-3 flex-1">
@@ -246,8 +232,8 @@ export default function UserProfilePage() {
       {/* Edit Profile Modal */}
       {isEditing && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-amber-200 max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="bg-white border border-amber-200 max-w-md w-full rounded-3xl p-6 sm:p-7 shadow-2xl space-y-5 relative animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                 <Edit3 className="w-5 h-5 text-amber-500" />
                 <span>Edit Profile</span>
@@ -270,7 +256,7 @@ export default function UserProfilePage() {
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   placeholder="e.g. Harsh Deep"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-sm font-medium"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-sm font-medium"
                 />
               </div>
 
@@ -281,10 +267,10 @@ export default function UserProfilePage() {
                 <input
                   type="text"
                   value={editUsername}
-                  onChange={(e) => setEditUsername(e.target.value)}
+                  onChange={(e) => setEditUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.-]/g, ""))}
                   required
-                  placeholder="username"
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-sm font-medium"
+                  placeholder="username (lowercase only)"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-sm font-medium"
                 />
               </div>
 
@@ -297,22 +283,23 @@ export default function UserProfilePage() {
                   onChange={(e) => setEditBio(e.target.value)}
                   rows={3}
                   placeholder="Tell readers about yourself..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-sm font-medium resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none text-sm font-medium resize-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              {/* Action Buttons Footer */}
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsEditing(false)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition"
+                  className="px-5 py-2 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-sm shadow transition flex items-center gap-1.5"
+                  className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-xs shadow transition flex items-center gap-1.5"
                 >
                   {isSaving ? "Saving..." : "Save Changes"}
                 </button>

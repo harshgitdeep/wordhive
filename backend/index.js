@@ -227,6 +227,7 @@ app.post("/login", async (req, res) => {
         username: userDoc.username,
         name: userDoc.name || "",
         bio: userDoc.bio || "Passionate writer & reader on WordHive.",
+        avatar: userDoc.avatar || "lion",
         token,
       });
     });
@@ -254,6 +255,7 @@ app.get("/profile", async (req, res) => {
         username: userDoc.username,
         name: userDoc.name || "",
         bio: userDoc.bio || "Passionate writer & reader on WordHive.",
+        avatar: userDoc.avatar || "lion",
         email: userDoc.email,
       });
     } catch (e) {
@@ -271,9 +273,9 @@ app.post("/logout", (req, res) => {
 //-------------------------------------------------------
 
 app.get("/check-username/:username", async (req, res) => {
-  const { username } = req.params;
   try {
-    const user = await User.findOne({ username });
+    const { username } = req.params;
+    const user = await User.findOne({ username: new RegExp(`^${username}$`, "i") });
     res.json({ available: !user });
   } catch (error) {
     console.error("Error checking username availability:", error);
@@ -282,9 +284,9 @@ app.get("/check-username/:username", async (req, res) => {
 });
 
 app.get("/check-email/:email", async (req, res) => {
-  const { email } = req.params;
   try {
-    const user = await User.findOne({ email });
+    const { email } = req.params;
+    const user = await User.findOne({ email: new RegExp(`^${email}$`, "i") });
     res.json({ available: !user });
   } catch (error) {
     console.error("Error checking email availability:", error);
@@ -292,10 +294,25 @@ app.get("/check-email/:email", async (req, res) => {
   }
 });
 
+//-------------------------------------------------------
+// Platform Metrics Endpoint
+//-------------------------------------------------------
+
+app.get("/stats", async (req, res) => {
+  try {
+    const activeWriters = await User.countDocuments();
+    const publishedArticles = await Post.countDocuments();
+    res.json({ activeWriters, publishedArticles });
+  } catch (error) {
+    console.error("Error fetching platform metrics:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.get("/total-users", async (req, res) => {
   try {
     const count = await User.countDocuments();
-    res.json({ totalUsers: count });
+    res.json({ count });
   } catch (error) {
     console.error("Error fetching total users count:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -316,7 +333,7 @@ app.get("/user/:username", async (req, res) => {
 
     if (userDoc) {
       const posts = await Post.find({ author: userDoc._id })
-        .populate("author", ["username"])
+        .populate("author", ["username", "avatar"])
         .sort({ createdAt: -1 });
 
       return res.json({
@@ -326,6 +343,7 @@ app.get("/user/:username", async (req, res) => {
           name: userDoc.name || "",
           email: userDoc.email,
           bio: userDoc.bio || "Passionate writer & reader on WordHive.",
+          avatar: userDoc.avatar || "lion",
           createdAt: userDoc.createdAt || (userDoc._id && userDoc._id.getTimestamp ? userDoc._id.getTimestamp() : new Date()),
         },
         posts,
@@ -334,7 +352,7 @@ app.get("/user/:username", async (req, res) => {
 
     // Fallback: If user doc isn't found directly, find posts matching author's populated username
     const posts = await Post.find()
-      .populate("author", ["username"])
+      .populate("author", ["username", "avatar"])
       .sort({ createdAt: -1 });
 
     const userPosts = posts.filter(
@@ -349,6 +367,7 @@ app.get("/user/:username", async (req, res) => {
           username: actualAuthor.username,
           name: "",
           bio: "Passionate writer & reader on WordHive.",
+          avatar: actualAuthor.avatar || "lion",
           createdAt: new Date(),
         },
         posts: userPosts,
@@ -370,7 +389,7 @@ app.put("/profile", async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, secret);
-    const { username, name, bio } = req.body;
+    const { username, name, bio, avatar } = req.body;
 
     const userDoc = await User.findById(decoded.id);
     if (!userDoc) {
@@ -388,6 +407,7 @@ app.put("/profile", async (req, res) => {
 
     if (name !== undefined) userDoc.name = name.trim();
     if (bio !== undefined) userDoc.bio = bio.trim();
+    if (avatar !== undefined) userDoc.avatar = avatar;
 
     await userDoc.save();
 
@@ -396,6 +416,7 @@ app.put("/profile", async (req, res) => {
       username: userDoc.username,
       name: userDoc.name,
       bio: userDoc.bio,
+      avatar: userDoc.avatar,
       email: userDoc.email,
     });
   } catch (error) {
