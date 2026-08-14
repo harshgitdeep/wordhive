@@ -14,6 +14,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import NotFoundPage from "./pages/NotFoundPage";
+import UserProfilePage from "./pages/UserProfilePage";
 import { Toaster } from 'react-hot-toast';
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -76,6 +77,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/user/:username" element={<UserProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

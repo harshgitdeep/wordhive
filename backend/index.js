@@ -224,7 +224,9 @@ app.post("/login", async (req, res) => {
       if (err) throw err;
       res.cookie("token", token, cookieOptions).json({
         id: userDoc._id,
-        username,
+        username: userDoc.username,
+        name: userDoc.name || "",
+        bio: userDoc.bio || "Passionate writer & reader on WordHive.",
         token,
       });
     });
@@ -233,16 +235,30 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", (req, res) => {
+app.get("/profile", async (req, res) => {
   const token = getToken(req);
   if (!token) {
     return res.status(200).json(null);
   }
-  jwt.verify(token, secret, {}, (err, info) => {
+  jwt.verify(token, secret, {}, async (err, info) => {
     if (err) {
       return res.status(401).json({ error: "Invalid token" });
     }
-    res.json(info);
+    try {
+      const userDoc = await User.findById(info.id).select("-password");
+      if (!userDoc) {
+        return res.json(info);
+      }
+      res.json({
+        id: userDoc._id,
+        username: userDoc.username,
+        name: userDoc.name || "",
+        bio: userDoc.bio || "Passionate writer & reader on WordHive.",
+        email: userDoc.email,
+      });
+    } catch (e) {
+      res.json(info);
+    }
   });
 });
 
@@ -283,6 +299,108 @@ app.get("/total-users", async (req, res) => {
   } catch (error) {
     console.error("Error fetching total users count:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//-------------------------------------------------------
+// User Profile Endpoint
+//-------------------------------------------------------
+
+app.get("/user/:username", async (req, res) => {
+  const { username } = req.params;
+  try {
+    const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const userDoc = await User.findOne({ 
+      username: new RegExp(`^${escapedUsername}$`, "i") 
+    }).select("-password");
+
+    if (userDoc) {
+      const posts = await Post.find({ author: userDoc._id })
+        .populate("author", ["username"])
+        .sort({ createdAt: -1 });
+
+      return res.json({
+        user: {
+          _id: userDoc._id,
+          username: userDoc.username,
+          name: userDoc.name || "",
+          email: userDoc.email,
+          bio: userDoc.bio || "Passionate writer & reader on WordHive.",
+          createdAt: userDoc.createdAt || (userDoc._id && userDoc._id.getTimestamp ? userDoc._id.getTimestamp() : new Date()),
+        },
+        posts,
+      });
+    }
+
+    // Fallback: If user doc isn't found directly, find posts matching author's populated username
+    const posts = await Post.find()
+      .populate("author", ["username"])
+      .sort({ createdAt: -1 });
+
+    const userPosts = posts.filter(
+      (p) => p.author && p.author.username && p.author.username.toLowerCase() === username.toLowerCase()
+    );
+
+    if (userPosts.length > 0) {
+      const actualAuthor = userPosts[0].author;
+      return res.json({
+        user: {
+          _id: actualAuthor._id,
+          username: actualAuthor.username,
+          name: "",
+          bio: "Passionate writer & reader on WordHive.",
+          createdAt: new Date(),
+        },
+        posts: userPosts,
+      });
+    }
+
+    return res.status(404).json({ error: "User not found" });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.put("/profile", async (req, res) => {
+  const token = getToken(req);
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized: Token missing" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, secret);
+    const { username, name, bio } = req.body;
+
+    const userDoc = await User.findById(decoded.id);
+    if (!userDoc) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (username && username.trim() !== userDoc.username) {
+      const trimmedUsername = username.trim();
+      const existingUser = await User.findOne({ username: trimmedUsername });
+      if (existingUser && String(existingUser._id) !== String(userDoc._id)) {
+        return res.status(400).json({ error: "Username is already taken" });
+      }
+      userDoc.username = trimmedUsername;
+    }
+
+    if (name !== undefined) userDoc.name = name.trim();
+    if (bio !== undefined) userDoc.bio = bio.trim();
+
+    await userDoc.save();
+
+    res.json({
+      id: userDoc._id,
+      username: userDoc.username,
+      name: userDoc.name,
+      bio: userDoc.bio,
+      email: userDoc.email,
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ error: "Failed to update profile" });
   }
 });
 

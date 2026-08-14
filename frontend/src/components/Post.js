@@ -29,7 +29,13 @@ export default function Post({_id, title, summary, cover, content, createdAt, au
           <p className="summary">{summary}</p>
         </div>
         <p className="info">
-          <span className="author">@{author.username}</span>
+          <Link
+            to={`/user/${author.username}`}
+            className="author"
+            onClick={(e) => e.stopPropagation()}
+          >
+            @{author.username}
+          </Link>
           <time>{formattedDate}</time>
         </p>
       </div>

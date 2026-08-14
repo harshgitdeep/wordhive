@@ -76,7 +76,11 @@ export default function PostPage() {
     <div className="post-page">
       <h1>{postInfo.title}</h1>
       <time>{formattedDate}</time>
-      <div className="author">@{postInfo.author.username}</div>
+      <div className="author">
+        <Link to={`/user/${postInfo.author.username}`} className="hover:underline text-amber-600 font-bold transition">
+          @{postInfo.author.username}
+        </Link>
+      </div>
       <div className="action-row">
         <button className="share-btn" onClick={handleShare} aria-label="Share post">
           {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
