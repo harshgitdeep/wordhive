@@ -38,8 +38,8 @@ export default function IndexPage() {
     fetch(`${process.env.REACT_APP_API_URL}/total-users`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.totalUsers !== undefined) {
-          setTotalUsers(data.totalUsers);
+        if (data.count !== undefined) {
+          setTotalUsers(data.count);
         }
         setIsUsersLoading(false);
       })
